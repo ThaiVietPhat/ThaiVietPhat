@@ -1,9 +1,3 @@
-# 👋 Hi there, I'm Thai Viet Phat
-
-Final-year Computer Science student specializing in **Java Backend Development**. Currently building a **real-time chat application** for my graduation thesis, combining modern architecture patterns with pragmatic infrastructure decisions.
-
----
-
 ## 🎯 About Me
 
 ```
