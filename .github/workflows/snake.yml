@@ -1,0 +1,46 @@
+# ================================================================
+# 🐍 GitHub Contribution Grid Snake Animation
+# Auto-generates snake SVG from your contribution graph daily.
+#
+# Setup:
+#   1. Copy this file to YOUR profile repo (.github/workflows/snake.yml)
+#      Your profile repo name must equal your GitHub username: ThaiVietPhat
+#   2. Go to Settings → Actions → General → set "Workflow permissions"
+#      to "Read and write permissions"
+#   3. Push & manually trigger the workflow once to generate the SVGs
+#   4. The snake images will be saved to the `output` branch
+# ================================================================
+
+name: 🐍 Generate Snake Animation
+
+on:
+  schedule:
+    # Runs every day at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:       # Allow manual trigger from Actions tab
+  push:
+    branches:
+      - main               # Also run on push to main
+
+jobs:
+  generate:
+    name: Generate Snake SVGs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 🐍 Generate GitHub Contribution Snake (Light + Dark)
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ThaiVietPhat
+          outputs: |
+            dist/github-contribution-grid-snake.svg
+            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+
+      - name: 🚀 Push snake SVGs to `output` branch
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
