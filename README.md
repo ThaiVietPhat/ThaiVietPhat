@@ -17,6 +17,13 @@
 
 ## About
 
+<img src="assets/about-card.svg" width="100%" alt="about card" />
+
+<details>
+<summary><b>See as Java code</b></summary>
+
+<br/>
+
 ```java
 public record Profile(
     String name,
@@ -46,6 +53,8 @@ public record Profile(
     }
 }
 ```
+
+</details>
 
 ---
 

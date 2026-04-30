@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 270" width="900" height="270">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="270" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="0.5" stop-color="#111827"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="accentVert" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#58a6ff"/>
+      <stop offset="0.5" stop-color="#a371f7"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="280" y2="0">
+      <stop offset="0" stop-color="#58a6ff"/>
+      <stop offset="0.6" stop-color="#a371f7"/>
+      <stop offset="1" stop-color="#58a6ff"/>
+    </linearGradient>
+    <linearGradient id="avatarBorder" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#58a6ff"/>
+      <stop offset="0.5" stop-color="#a371f7"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="divider" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="0.15" stop-color="#58a6ff" stop-opacity="0.5"/>
+      <stop offset="0.85" stop-color="#a371f7" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bottomLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="0.3" stop-color="#58a6ff" stop-opacity="0.08"/>
+      <stop offset="0.5" stop-color="#a371f7" stop-opacity="0.15"/>
+      <stop offset="0.7" stop-color="#58a6ff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blurOrb">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+    <filter id="blurSm">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="270" fill="url(#bg)" rx="12"/>
+
+  <!-- Subtle grid dots -->
+  <g fill="#21262d" opacity="0.35">
+    <pattern id="dotGrid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="0.8"/>
+    </pattern>
+    <rect width="900" height="270" fill="url(#dotGrid)"/>
+  </g>
+
+  <!-- Decorative blurred orbs -->
+  <circle cx="800" cy="50" r="90" fill="#58a6ff" opacity="0.05" filter="url(#blurOrb)"/>
+  <circle cx="120" cy="220" r="70" fill="#a371f7" opacity="0.04" filter="url(#blurOrb)"/>
+
+  <!-- Avatar circle -->
+  <g transform="translate(95, 105)" filter="url(#shadow)">
+    <!-- Outer ring -->
+    <circle cx="0" cy="0" r="52" fill="none" stroke="url(#avatarBorder)" stroke-width="2.5"/>
+    <!-- Inner fill -->
+    <circle cx="0" cy="0" r="48" fill="#111827"/>
+    <!-- Inner subtle border -->
+    <circle cx="0" cy="0" r="48" fill="none" stroke="#21262d" stroke-width="1"/>
+    <!-- Initials -->
+    <text x="0" y="7" font-family="'SF Mono', 'JetBrains Mono', 'Fira Code', monospace" font-size="24" font-weight="700" fill="#58a6ff" text-anchor="middle" letter-spacing="1">TVP</text>
+  </g>
+
+  <!-- Vertical accent bar behind content -->
+  <rect x="195" y="42" width="3" height="110" rx="1.5" fill="url(#accentVert)" opacity="0.15"/>
+
+  <!-- Name -->
+  <text x="215" y="82" font-family="'Segoe UI', -apple-system, 'Helvetica Neue', sans-serif" font-size="30" font-weight="800" fill="url(#textGrad)" letter-spacing="0.5">
+    Thai Viet Phat
+  </text>
+
+  <!-- Role badge background -->
+  <rect x="215" y="92" width="195" height="24" rx="12" fill="#58a6ff" opacity="0.08"/>
+  <!-- Role text -->
+  <text x="217" y="109" font-family="'Segoe UI', -apple-system, 'Helvetica Neue', sans-serif" font-size="13" font-weight="600" fill="#58a6ff" letter-spacing="1.5">
+    JAVA BACKEND DEVELOPER
+  </text>
+
+  <!-- Divider line -->
+  <rect x="215" y="126" width="650" height="1" fill="url(#divider)"/>
+
+  <!-- Info rows -->
+  <!-- School -->
+  <g transform="translate(215, 152)">
+    <text x="0" y="0" font-family="'Segoe UI', -apple-system, sans-serif" font-size="13" fill="#8b949e">🎓</text>
+    <text x="24" y="0" font-family="'Segoe UI', -apple-system, sans-serif" font-size="13" fill="#8b949e">
+      <tspan fill="#c9d1d9">Computer Science</tspan>
+      <tspan fill="#484f58"> · </tspan>
+      <tspan fill="#8b949e">Industrial Univ. of HCM City</tspan>
+      <tspan fill="#484f58"> · </tspan>
+      <tspan fill="#58a6ff" font-weight="500">2022→</tspan>
+    </text>
+  </g>
+
+  <!-- Location -->
+  <g transform="translate(215, 176)">
+    <text x="0" y="0" font-family="'Segoe UI', -apple-system, sans-serif" font-size="13" fill="#8b949e">📍</text>
+    <text x="24" y="0" font-family="'Segoe UI', -apple-system, sans-serif" font-size="13" fill="#8b949e">
+      <tspan fill="#c9d1d9">Ho Chi Minh City</tspan>
+      <tspan fill="#484f58">, Vietnam</tspan>
+    </text>
+  </g>
+
+  <!-- Email -->
+  <g transform="translate(215, 200)">
+    <text x="0" y="0" font-family="'Segoe UI', -apple-system, sans-serif" font-size="13" fill="#8b949e">📧</text>
+    <text x="24" y="0" font-family="'Segoe UI', -apple-system, sans-serif" font-size="13" fill="#8b949e">
+      <tspan fill="#58a6ff" text-decoration="underline">thaiphat07031509@gmail.com</tspan>
+    </text>
+  </g>
+
+  <!-- Passion tags -->
+  <g transform="translate(215, 232)">
+    <!-- Tag 1 -->
+    <rect x="0" y="-10" width="82" height="22" rx="11" fill="#58a6ff" opacity="0.1"/>
+    <text x="41" y="5" font-family="'Segoe UI', -apple-system, sans-serif" font-size="11" font-weight="500" fill="#58a6ff" text-anchor="middle">REST APIs</text>
+
+    <!-- Tag 2 -->
+    <rect x="90" y="-10" width="98" height="22" rx="11" fill="#a371f7" opacity="0.1"/>
+    <text x="139" y="5" font-family="'Segoe UI', -apple-system, sans-serif" font-size="11" font-weight="500" fill="#a371f7" text-anchor="middle">Microservices</text>
+
+    <!-- Tag 3 -->
+    <rect x="196" y="-10" width="82" height="22" rx="11" fill="#58a6ff" opacity="0.1"/>
+    <text x="237" y="5" font-family="'Segoe UI', -apple-system, sans-serif" font-size="11" font-weight="500" fill="#58a6ff" text-anchor="middle">WebSocket</text>
+
+    <!-- Tag 4 -->
+    <rect x="286" y="-10" width="88" height="22" rx="11" fill="#a371f7" opacity="0.1"/>
+    <text x="330" y="5" font-family="'Segoe UI', -apple-system, sans-serif" font-size="11" font-weight="500" fill="#a371f7" text-anchor="middle">Spring AI</text>
+
+    <!-- Tag 5 -->
+    <rect x="382" y="-10" width="95" height="22" rx="11" fill="#58a6ff" opacity="0.1"/>
+    <text x="429" y="5" font-family="'Segoe UI', -apple-system, sans-serif" font-size="11" font-weight="500" fill="#58a6ff" text-anchor="middle">Docker / K8s</text>
+  </g>
+
+  <!-- Bottom glow line -->
+  <rect x="30" y="262" width="840" height="1.5" fill="url(#bottomLine)"/>
+</svg>
