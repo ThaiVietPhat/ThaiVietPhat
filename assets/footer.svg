@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 80" width="900" height="80">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#161b22"/>
+      <stop offset="1" stop-color="#0d1117"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="0.15" stop-color="#58a6ff" stop-opacity="0.15"/>
+      <stop offset="0.5" stop-color="#a371f7" stop-opacity="0.3"/>
+      <stop offset="0.85" stop-color="#58a6ff" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="80" fill="url(#bg)"/>
+
+  <!-- Subtle dots -->
+  <g fill="#21262d" opacity="0.3">
+    <pattern id="dotGrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="1"/>
+    </pattern>
+    <rect width="900" height="80" fill="url(#dotGrid)"/>
+  </g>
+
+  <!-- Top wave line -->
+  <rect x="0" y="0" width="900" height="1.5" fill="url(#wave)"/>
+
+  <!-- Glow orb -->
+  <circle cx="450" cy="40" r="60" fill="#58a6ff" opacity="0.05" filter="url(#blur)"/>
+
+  <!-- Text -->
+  <text x="450" y="44" font-family="'Segoe UI', -apple-system, 'Helvetica Neue', sans-serif" font-size="11" fill="#484f58" text-anchor="middle" letter-spacing="1.5">CRAFTED WITH JAVA & SPRING BOOT</text>
+</svg>

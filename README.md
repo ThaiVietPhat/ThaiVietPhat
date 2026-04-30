@@ -1,29 +1,21 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)"
-          srcset="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,40:1a1a2e,100:0f3460&height=180&section=header&text=Thai%20Viet%20Phat&fontSize=48&fontColor=58a6ff&animation=fadeIn&fontAlignY=36&desc=Java%20Backend%20Developer%20•%20Spring%20Boot%20•%20IUH&descAlignY=54&descSize=15&descColor=8b949e" />
-  <source media="(prefers-color-scheme: light)"
-          srcset="https://capsule-render.vercel.app/api?type=waving&color=0:1565c0,40:1976d2,100:42a5f5&height=180&section=header&text=Thai%20Viet%20Phat&fontSize=48&fontColor=ffffff&animation=fadeIn&fontAlignY=36&desc=Java%20Backend%20Developer%20•%20Spring%20Boot%20•%20IUH&descAlignY=54&descSize=15&descColor=e3f2fd" />
-  <img width="100%"
-       src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,40:1a1a2e,100:0f3460&height=180&section=header&text=Thai%20Viet%20Phat&fontSize=48&fontColor=58a6ff&animation=fadeIn&fontAlignY=36&desc=Java%20Backend%20Developer%20•%20Spring%20Boot%20•%20IUH&descAlignY=54&descSize=15&descColor=8b949e"
-       alt="header" />
-</picture>
+<img src="assets/banner.svg" width="100%" alt="banner" />
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=20&duration=3000&pause=800&color=58A6FF&center=true&vCenter=true&width=540&height=44&lines=Spring+Boot+%7C+Microservices+%7C+REST+APIs;OAuth2+%7C+JWT+%7C+WebSocket+%7C+Kafka;Docker+%7C+Kubernetes+%7C+AWS;Spring+AI+%7C+LLM+Integration" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=20&duration=3200&pause=800&color=58A6FF&center=true&vCenter=true&width=500&height=40&lines=Spring+Boot+%7C+Microservices+%7C+REST+APIs;OAuth2+%7C+JWT+%7C+WebSocket+%7C+Kafka;Docker+%7C+Kubernetes+%7C+AWS;Spring+AI+%7C+LLM+Integration" alt="typing" />
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=ThaiVietPhat&label=Profile+Views&color=0e75b6&style=for-the-badge" />
+  <img src="https://komarev.com/ghpvc/?username=ThaiVietPhat&label=Views&color=0e75b6&style=flat-square" />
   <a href="https://github.com/ThaiVietPhat?tab=followers">
-    <img src="https://img.shields.io/github/followers/ThaiVietPhat?label=Followers&style=for-the-badge&color=1a73e8" />
+    <img src="https://img.shields.io/github/followers/ThaiVietPhat?label=Followers&style=flat-square&color=1a73e8" />
   </a>
-  <img src="https://img.shields.io/badge/Focus-Java%20Backend-brightgreen?style=for-the-badge&logo=openjdk&logoColor=white" />
-  <img src="https://img.shields.io/badge/Status-Open%20to%20Work-3fb950?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Focus-Java%20Backend-3fb950?style=flat-square" />
+  <img src="https://img.shields.io/badge/Open%20to%20Work-3fb950?style=flat-square" />
 </p>
 
 ---
 
-## About Me
+## About
 
 ```java
 public record Profile(
@@ -35,12 +27,12 @@ public record Profile(
     String[] passions
 ) {
     public static final Profile ME = new Profile(
-        /* name      */ "Thai Viet Phat",
-        /* role      */ "Java Backend Developer (Intern / Fresher)",
-        /* school    */ "Industrial Univ. of HCM City — CS (2022→)",
-        /* location  */ "Ho Chi Minh City, Vietnam",
-        /* email     */ "thaiphat07031509@gmail.com",
-        /* passions  */ new String[] {
+        "Thai Viet Phat",
+        "Java Backend Developer (Intern / Fresher)",
+        "Industrial Univ. of HCM City — CS (2022→)",
+        "Ho Chi Minh City, Vietnam",
+        "thaiphat07031509@gmail.com",
+        new String[] {
             "RESTful APIs & Microservices",
             "Real-time Systems (WebSocket / Kafka)",
             "Stateless JWT Security (tokenVersion)",
@@ -57,31 +49,37 @@ public record Profile(
 
 ---
 
-## Tech Stack
+## Stack
 
-<p>
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
-  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" />
-  <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=spring-security&logoColor=white" />
-  <img src="https://img.shields.io/badge/Spring_Cloud_Gateway-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
-  <img src="https://img.shields.io/badge/Spring_AI-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
-  <img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white" />
-  <img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white" />
-  <img src="https://img.shields.io/badge/WebSocket_STOMP-010101?style=for-the-badge&logo=socket.io&logoColor=white" />
-  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white" />
-  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
-  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
-  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
-  <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" />
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
-  <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" />
-  <img src="https://img.shields.io/badge/AWS_EC2_RDS_S3-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white" />
-  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" />
-  <img src="https://img.shields.io/badge/JUnit_5-25A162?style=for-the-badge&logo=junit5&logoColor=white" />
-  <img src="https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white" />
-  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
-  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" />
-</p>
+**Languages & Frameworks**
+
+<img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=spring-security&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_Cloud_Gateway-6DB33F?style=flat-square&logo=spring&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_AI-6DB33F?style=flat-square&logo=spring&logoColor=white" />
+<img src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=hibernate&logoColor=white" />
+<img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white" />
+<img src="https://img.shields.io/badge/WebSocket-010101?style=flat-square&logo=socket.io&logoColor=white" />
+
+**Data & Messaging**
+
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white" />
+<img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white" />
+<img src="https://img.shields.io/badge/MongoDB-4EA94B?style=flat-square&logo=mongodb&logoColor=white" />
+<img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" />
+<img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=flat-square&logo=apache-kafka&logoColor=white" />
+
+**Cloud, DevOps & Tools**
+
+<img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
+<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=kubernetes&logoColor=white" />
+<img src="https://img.shields.io/badge/AWS-FF9900?style=flat-square&logo=amazon-aws&logoColor=white" />
+<img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white" />
+<img src="https://img.shields.io/badge/Flyway-CC0200?style=flat-square&logo=flyway&logoColor=white" />
+<img src="https://img.shields.io/badge/JUnit_5-25A162?style=flat-square&logo=junit5&logoColor=white" />
+<img src="https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black" />
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=postman&logoColor=white" />
 
 ---
 
@@ -200,6 +198,10 @@ public record Profile(
        alt="activity graph" />
 </picture>
 
+<p align="center">
+  <img src="https://github-profile-trophy.vercel.app/?username=ThaiVietPhat&theme=gitdimmed&no-frame=true&no-bg=true&row=1&column=6" alt="trophies" />
+</p>
+
 ---
 
 ## Contribution Snake
@@ -224,26 +226,18 @@ public record Profile(
 
 <p align="center">
   <a href="mailto:thaiphat07031509@gmail.com">
-    <img src="https://img.shields.io/badge/Gmail-thaiphat07031509%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+    <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
   </a>
   <a href="https://linkedin.com/in/thai-viet-phat">
-    <img src="https://img.shields.io/badge/LinkedIn-thai--viet--phat-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
+    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
   </a>
   <a href="https://github.com/ThaiVietPhat">
-    <img src="https://img.shields.io/badge/GitHub-ThaiVietPhat-181717?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
 </p>
 
 <p align="center">
-  <i>Open to Java Backend Intern / Fresher roles in Ho Chi Minh City</i>
+  <sub>Open to Java Backend Intern / Fresher roles — Ho Chi Minh City</sub>
 </p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)"
-          srcset="https://capsule-render.vercel.app/api?type=waving&color=0:0f3460,60:1a1a2e,100:0d1117&height=100&section=footer" />
-  <source media="(prefers-color-scheme: light)"
-          srcset="https://capsule-render.vercel.app/api?type=waving&color=0:42a5f5,60:1976d2,100:1565c0&height=100&section=footer" />
-  <img width="100%"
-       src="https://capsule-render.vercel.app/api?type=waving&color=0:0f3460,60:1a1a2e,100:0d1117&height=100&section=footer"
-       alt="footer" />
-</picture>
+<img src="assets/footer.svg" width="100%" alt="footer" />

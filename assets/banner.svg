@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#58a6ff"/>
+      <stop offset="1" stop-color="#a371f7"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="260" y2="0">
+      <stop offset="0" stop-color="#58a6ff"/>
+      <stop offset="1" stop-color="#a371f7"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="900" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#58a6ff" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="60" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="blurLg">
+      <feGaussianBlur stdDeviation="80"/>
+    </filter>
+    <filter id="blurSm">
+      <feGaussianBlur stdDeviation="50"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="200" fill="url(#bg)"/>
+
+  <!-- Subtle grid dots -->
+  <g fill="#21262d" opacity="0.5">
+    <pattern id="dotGrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="1"/>
+    </pattern>
+    <rect width="900" height="200" fill="url(#dotGrid)"/>
+  </g>
+
+  <!-- Decorative blurred orbs -->
+  <circle cx="750" cy="60" r="100" fill="#58a6ff" opacity="0.08" filter="url(#blurLg)"/>
+  <circle cx="650" cy="160" r="70" fill="#a371f7" opacity="0.06" filter="url(#blurSm)"/>
+  <circle cx="100" cy="180" r="60" fill="#58a6ff" opacity="0.04" filter="url(#blurSm)"/>
+
+  <!-- Left accent bar -->
+  <rect x="36" y="48" width="4" height="104" rx="2" fill="url(#accent)"/>
+
+  <!-- Code bracket decoration -->
+  <text x="50" y="62" font-family="'SF Mono', 'JetBrains Mono', 'Fira Code', monospace" font-size="14" fill="#58a6ff" opacity="0.3" letter-spacing="2">&lt;developer&gt;</text>
+
+  <!-- Name -->
+  <text x="50" y="118" font-family="'Segoe UI', -apple-system, 'Helvetica Neue', sans-serif" font-size="42" font-weight="800" fill="url(#textGrad)" letter-spacing="1">Thai Viet Phat</text>
+
+  <!-- Role -->
+  <text x="50" y="148" font-family="'Segoe UI', -apple-system, 'Helvetica Neue', sans-serif" font-size="16" font-weight="500" fill="#8b949e" letter-spacing="3">JAVA BACKEND DEVELOPER</text>
+
+  <!-- Bottom wave line -->
+  <rect x="0" y="196" width="900" height="1.5" fill="url(#wave)"/>
+</svg>
