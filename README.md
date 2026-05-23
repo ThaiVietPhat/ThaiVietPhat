@@ -1,55 +1,66 @@
-<img src="assets/banner.svg" width="100%" alt="banner" />
+<p align="center">
+  <img src="assets/banner.svg" width="100%" alt="Portfolio Banner" />
+</p>
+
+<h1 align="center">Hi there! 👋 I'm Thai Viet Phat</h1>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=20&duration=3200&pause=800&color=58A6FF&center=true&vCenter=true&width=500&height=40&lines=Spring+Boot+%7C+Microservices+%7C+REST+APIs;OAuth2+%7C+JWT+%7C+WebSocket+%7C+Kafka;Docker+%7C+Kubernetes+%7C+AWS;Spring+AI+%7C+LLM+Integration" alt="typing" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=22&duration=3200&pause=800&color=58A6FF&center=true&vCenter=true&width=600&height=50&lines=Software+Engineer;Java+%7C+Spring+Boot+%7C+Microservices;Building+Scalable+REST+APIs;Designing+Real-Time+Systems;Cloud+Native+%7C+AWS+%7C+Docker" alt="typing animation" />
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=ThaiVietPhat&label=Views&color=0e75b6&style=flat-square" />
-  <a href="https://github.com/ThaiVietPhat?tab=followers">
-    <img src="https://img.shields.io/github/followers/ThaiVietPhat?label=Followers&style=flat-square&color=1a73e8" />
+  <a href="https://github.com/ThaiVietPhat">
+    <img src="https://komarev.com/ghpvc/?username=ThaiVietPhat&label=Profile%20Views&color=0e75b6&style=for-the-badge" alt="Profile Views" />
   </a>
-  <img src="https://img.shields.io/badge/Focus-Java%20Backend-3fb950?style=flat-square" />
-  <img src="https://img.shields.io/badge/Open%20to%20Work-3fb950?style=flat-square" />
+  <a href="https://github.com/ThaiVietPhat?tab=followers">
+    <img src="https://img.shields.io/github/followers/ThaiVietPhat?label=Followers&style=for-the-badge&color=1a73e8" alt="Followers" />
+  </a>
+  <img src="https://img.shields.io/badge/Focus-Backend%20Engineering-3fb950?style=for-the-badge" alt="Focus" />
+  <img src="https://img.shields.io/badge/Status-Open%20to%20Work-3fb950?style=for-the-badge" alt="Status" />
 </p>
 
 ---
 
-## About
+<h2 align="center">⚡ About Me</h2>
 
-<img src="assets/about-card.svg" width="100%" alt="about card" />
+<p align="center">
+  <img src="assets/about-card.svg" width="100%" alt="About Me Card" />
+</p>
+
+<p align="center">
+  <strong>Transforming complex problems into elegant, scalable backend solutions.</strong>
+</p>
+
+I am a passionate **Java Backend Developer** based in Ho Chi Minh City, Vietnam. With a strong foundation in Computer Science and a deep interest in distributed systems, I specialize in architecting high-performance APIs, real-time communication networks, and cloud-native microservices. I thrive in environments that challenge me to build robust, secure, and production-ready applications.
 
 <details>
-<summary><b>See as Java code</b></summary>
-
-<br/>
+<summary><b>👨‍💻 View Developer Profile (Java)</b></summary>
+<br>
 
 ```java
 public record Profile(
     String name,
     String role,
-    String school,
+    String education,
     String location,
-    String email,
-    String[] passions
+    String[] coreCompetencies
 ) {
     public static final Profile ME = new Profile(
         "Thai Viet Phat",
         "Java Backend Developer (Intern / Fresher)",
-        "Industrial Univ. of HCM City — CS (2022→)",
+        "Industrial University of Ho Chi Minh City — CS (2022 - Present)",
         "Ho Chi Minh City, Vietnam",
-        "thaiphat07031509@gmail.com",
         new String[] {
-            "RESTful APIs & Microservices",
-            "Real-time Systems (WebSocket / Kafka)",
-            "Stateless JWT Security (tokenVersion)",
-            "Spring AI / LLM Integration",
-            "Docker & K8s Deployments"
+            "RESTful APIs & Microservices Architecture",
+            "Real-time Systems (WebSocket, Kafka)",
+            "Stateless Security (JWT, OAuth2)",
+            "AI Integration (Spring AI, LLMs)",
+            "Cloud Deployments (Docker, Kubernetes, AWS)"
         }
     );
 
     public static void main(String[] args) {
-        System.out.println("Turn ☕ coffee into production-ready Java APIs.");
+        System.out.println("Turning ☕ coffee into production-ready Java APIs.");
     }
 }
 ```
@@ -58,195 +69,207 @@ public record Profile(
 
 ---
 
-## Stack
+<h2 align="center">🔭 Currently Building & Learning</h2>
 
-**Languages & Frameworks**
-
-<img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" />
-<img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" />
-<img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=spring-security&logoColor=white" />
-<img src="https://img.shields.io/badge/Spring_Cloud_Gateway-6DB33F?style=flat-square&logo=spring&logoColor=white" />
-<img src="https://img.shields.io/badge/Spring_AI-6DB33F?style=flat-square&logo=spring&logoColor=white" />
-<img src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=hibernate&logoColor=white" />
-<img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white" />
-<img src="https://img.shields.io/badge/WebSocket-010101?style=flat-square&logo=socket.io&logoColor=white" />
-
-**Data & Messaging**
-
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white" />
-<img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white" />
-<img src="https://img.shields.io/badge/MongoDB-4EA94B?style=flat-square&logo=mongodb&logoColor=white" />
-<img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" />
-<img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=flat-square&logo=apache-kafka&logoColor=white" />
-
-**Cloud, DevOps & Tools**
-
-<img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" />
-<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=kubernetes&logoColor=white" />
-<img src="https://img.shields.io/badge/AWS-FF9900?style=flat-square&logo=amazon-aws&logoColor=white" />
-<img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white" />
-<img src="https://img.shields.io/badge/Flyway-CC0200?style=flat-square&logo=flyway&logoColor=white" />
-<img src="https://img.shields.io/badge/JUnit_5-25A162?style=flat-square&logo=junit5&logoColor=white" />
-<img src="https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black" />
-<img src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=postman&logoColor=white" />
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🛠️ Current Focus</h3>
+      <ul>
+        <li>Mastering <b>Spring Boot 3.x</b> and <b>Java 21</b> features.</li>
+        <li>Exploring <b>Microservices</b> patterns and Event-Driven Architectures with <b>Apache Kafka</b>.</li>
+        <li>Deepening knowledge of <b>Cloud-Native</b> deployments using <b>Docker & Kubernetes</b>.</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🚀 What's Next</h3>
+      <ul>
+        <li>Diving deeper into <b>System Design</b> and massive scale architectures.</li>
+        <li>Contributing to prominent Open Source software.</li>
+        <li>Exploring advanced <b>Spring AI</b> use cases for modern smart applications.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 ---
 
-## Featured Project
+<h2 align="center">💻 Tech Stack</h2>
 
-### Zalo Clone — Real-Time Chat Application
-> `Jan 2026 – Present` · Spring Boot 3.4.2 · Java 21 · WebSocket/STOMP · Spring AI · AWS S3 · MySQL · Redis · Docker
+<div align="center">
+
+**Languages & Core Frameworks**<br>
+<img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=spring-security&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_Cloud-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
+<img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white" />
+<img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white" />
+<img src="https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socket.io&logoColor=white" />
+
+<br><br>
+
+**Databases & Messaging**<br>
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+<img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+<img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
+<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" />
+<img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white" />
+
+<br><br>
+
+**DevOps, Cloud & Tools**<br>
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" />
+<img src="https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white" />
+<img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" />
+<img src="https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white" />
+<img src="https://img.shields.io/badge/JUnit_5-25A162?style=for-the-badge&logo=junit5&logoColor=white" />
+<img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" />
+
+</div>
+
+---
+
+<h2 align="center">🏆 Highlights & Achievements</h2>
+
+- 🌟 Developed a **Real-Time Chat Application (Zalo Clone)** capable of handling instant messaging and media sharing with minimal latency.
+- 🔒 Implemented advanced **stateless security paradigms** using embedded token versioning in JWTs.
+- 🤖 Successfully integrated **Generative AI capabilities** into traditional Java backend applications using Spring AI.
+- 📈 Maintained a consistent track record of continuous learning and contribution, as reflected in my daily GitHub activity and streak.
+
+---
+
+<h2 align="center">🚀 Featured Projects</h2>
+
+### 💬 Zalo Clone — Scalable Real-Time Chat System
+
+> **Status:** Active Development | **Role:** Backend Architect & Developer
+>
+> A robust, full-featured messaging platform featuring real-time communication, AI integration, and secure media processing.
 
 <table>
 <tr>
-<td width="50%" valign="top">
-
-**Real-Time Architecture**
-- Dual-channel WebSocket: `/topic` broadcasts + per-user STOMP queues
-- Full message lifecycle `SENT → DELIVERED → SEEN` with real-time push
-- Emoji reactions — zero N+1 via single batch query on paginated history
-- Sender-only recall with instant notification to receiver
-
-</td>
-<td width="50%" valign="top">
-
-**Security**
-- JWT HS256 with embedded `tokenVersion` claim
-- New login increments version → stale tokens rejected server-side
-- Instant remote logout across all devices simultaneously
-- `ChannelInterceptor` validates JWT on every WebSocket `CONNECT` frame
-
-</td>
+<th width="50%">⚡ Architecture & Real-Time</th>
+<th width="50%">🛡️ Security & AI Integration</th>
 </tr>
 <tr>
-<td width="50%" valign="top">
+<td valign="top">
 
-**AI Features (Spring AI + Groq)**
-- Personal AI assistant — 20-message rolling context window
-- `@AI` group bot — async responses using last 30 messages as context
-- Smart Reply — LLM suggests 3 replies as structured JSON array
-- Graceful rate-limit fallback on Groq API throttle
+- **WebSocket/STOMP:** Dual-channel routing (`/topic` broadcasts + per-user queues).
+- **Message Lifecycle:** Real-time push for `SENT → DELIVERED → SEEN` states.
+- **Optimized Storage:** Zero N+1 queries via batch history pagination.
+- **Media Pipeline:** AWS S3 integration with presigned URLs and `206 Partial Content` streaming.
 
 </td>
-<td width="50%" valign="top">
+<td valign="top">
 
-**AWS S3 Media Pipeline**
-- Private bucket — access via presigned URLs only (30-min TTL)
-- UUID-keyed storage · MIME-type allowlist · 50 MB limit
-- HTTP Range (`206 Partial Content`) → native video/audio streaming
-- Zero full-file downloads needed for media playback
+- **Stateless Auth:** JWT HS256 with dynamic `tokenVersion` claims for instant remote logouts.
+- **Interceptor Security:** Strict JWT validation on every WebSocket `CONNECT` frame.
+- **Smart AI:** Integrated **Spring AI + Groq** for personal assistant bots and structured LLM Smart Replies.
+- **Admin Analytics:** RBAC module with immutable audit logging and real-time metric tracking.
 
 </td>
 </tr>
 </table>
 
-<details>
-<summary>Admin Module & Analytics</summary>
-
-<br/>
-
-- RBAC-protected endpoints: user ban/unban, role promotion/demotion, account soft-delete, password reset, group dissolution
-- Every admin action persisted to an immutable `AuditLog` table
-- Real-time analytics: daily message/user/group counts, top active users
-
-</details>
-
 <p>
   <a href="https://github.com/ThaiVietPhat/zalo-clone">
-    <img src="https://img.shields.io/badge/View%20on%20GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
-  <img src="https://img.shields.io/badge/Status-Active%20Development-orange?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk" />
-  <img src="https://img.shields.io/badge/Spring%20Boot-3.4.2-6DB33F?style=for-the-badge&logo=spring-boot" />
+  <img src="https://img.shields.io/badge/Stack-Java_21_|_Spring_Boot_3-6DB33F?style=for-the-badge&logo=spring" />
 </p>
 
 ---
 
-## GitHub Analytics
+<h2 align="center">📊 GitHub Statistics</h2>
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)"
-            srcset="https://github-readme-stats.vercel.app/api?username=ThaiVietPhat&show_icons=true&theme=github_dark&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github&bg_color=0d1117&title_color=58a6ff&icon_color=a371f7&text_color=c9d1d9" />
-    <source media="(prefers-color-scheme: light)"
-            srcset="https://github-readme-stats.vercel.app/api?username=ThaiVietPhat&show_icons=true&theme=default&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github" />
-    <img height="180"
-         src="https://github-readme-stats.vercel.app/api?username=ThaiVietPhat&show_icons=true&theme=github_dark&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github&bg_color=0d1117&title_color=58a6ff&icon_color=a371f7&text_color=c9d1d9"
-         alt="stats" />
-  </picture>
-  <picture>
-    <source media="(prefers-color-scheme: dark)"
-            srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=ThaiVietPhat&layout=compact&theme=github_dark&hide_border=true&langs_count=8&bg_color=0d1117&title_color=58a6ff&text_color=c9d1d9" />
-    <source media="(prefers-color-scheme: light)"
-            srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=ThaiVietPhat&layout=compact&theme=default&hide_border=true&langs_count=8" />
-    <img height="180"
-         src="https://github-readme-stats.vercel.app/api/top-langs/?username=ThaiVietPhat&layout=compact&theme=github_dark&hide_border=true&langs_count=8&bg_color=0d1117&title_color=58a6ff&text_color=c9d1d9"
-         alt="top languages" />
-  </picture>
-</p>
+<div align="center">
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)"
-            srcset="https://github-readme-streak-stats.herokuapp.com/?user=ThaiVietPhat&theme=github-dark-blue&hide_border=true&date_format=j%20M%5B%20Y%5D&background=0D1117&ring=58a6ff&fire=a371f7&currStreakLabel=58a6ff&currStreakNum=a371f7&sideNums=58a6ff&sideLabels=8b949e&dates=8b949e" />
-    <source media="(prefers-color-scheme: light)"
-            srcset="https://github-readme-streak-stats.herokuapp.com/?user=ThaiVietPhat&theme=default&hide_border=true&date_format=j%20M%5B%20Y%5D" />
-    <img width="680"
-         src="https://github-readme-streak-stats.herokuapp.com/?user=ThaiVietPhat&theme=github-dark-blue&hide_border=true&date_format=j%20M%5B%20Y%5D&background=0D1117&ring=58a6ff&fire=a371f7&currStreakLabel=58a6ff&currStreakNum=a371f7&sideNums=58a6ff&sideLabels=8b949e&dates=8b949e"
-         alt="streak" />
-  </picture>
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=ThaiVietPhat&show_icons=true&theme=github_dark&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github&bg_color=0d1117&title_color=58a6ff&icon_color=a371f7&text_color=c9d1d9" />
+        <img height="180" src="https://github-readme-stats.vercel.app/api?username=ThaiVietPhat&show_icons=true&theme=default&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github" alt="GitHub Stats" />
+      </picture>
+    </td>
+    <td align="center">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=ThaiVietPhat&layout=compact&theme=github_dark&hide_border=true&langs_count=8&bg_color=0d1117&title_color=58a6ff&text_color=c9d1d9" />
+        <img height="180" src="https://github-readme-stats.vercel.app/api/top-langs/?username=ThaiVietPhat&layout=compact&theme=default&hide_border=true&langs_count=8" alt="Top Languages" />
+      </picture>
+    </td>
+  </tr>
+</table>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)"
-          srcset="https://github-readme-activity-graph.vercel.app/graph?username=ThaiVietPhat&bg_color=0d1117&color=58a6ff&line=a371f7&point=58a6ff&area=true&area_color=a371f720&hide_border=true&custom_title=Contribution%20Activity" />
-  <source media="(prefers-color-scheme: light)"
-          srcset="https://github-readme-activity-graph.vercel.app/graph?username=ThaiVietPhat&bg_color=f6f8fa&color=1565c0&line=1976d2&point=0d47a1&area=true&area_color=bbdefb&hide_border=true&custom_title=Contribution%20Activity" />
-  <img width="100%"
-       src="https://github-readme-activity-graph.vercel.app/graph?username=ThaiVietPhat&bg_color=0d1117&color=58a6ff&line=a371f7&point=58a6ff&area=true&area_color=a371f720&hide_border=true&custom_title=Contribution%20Activity"
-       alt="activity graph" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-streak-stats.herokuapp.com/?user=ThaiVietPhat&theme=github-dark-blue&hide_border=true&date_format=j%20M%5B%20Y%5D&background=0D1117&ring=58a6ff&fire=a371f7&currStreakLabel=58a6ff&currStreakNum=a371f7&sideNums=58a6ff&sideLabels=8b949e&dates=8b949e" />
+  <img width="680" src="https://github-readme-streak-stats.herokuapp.com/?user=ThaiVietPhat&theme=default&hide_border=true&date_format=j%20M%5B%20Y%5D" alt="GitHub Streak" />
 </picture>
 
-<p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=ThaiVietPhat&theme=gitdimmed&no-frame=true&no-bg=true&row=1&column=6" alt="trophies" />
-</p>
-
----
-
-## Contribution Snake
+<br><br>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)"
-          srcset="https://raw.githubusercontent.com/ThaiVietPhat/ThaiVietPhat/output/github-contribution-grid-snake-dark.svg" />
-  <source media="(prefers-color-scheme: light)"
-          srcset="https://raw.githubusercontent.com/ThaiVietPhat/ThaiVietPhat/output/github-contribution-grid-snake.svg" />
-  <img width="100%"
-       src="https://raw.githubusercontent.com/ThaiVietPhat/ThaiVietPhat/output/github-contribution-grid-snake-dark.svg"
-       alt="snake" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-activity-graph.vercel.app/graph?username=ThaiVietPhat&bg_color=0d1117&color=58a6ff&line=a371f7&point=58a6ff&area=true&area_color=a371f720&hide_border=true&custom_title=Contribution%20Activity" />
+  <img width="100%" src="https://github-readme-activity-graph.vercel.app/graph?username=ThaiVietPhat&bg_color=f6f8fa&color=1565c0&line=1976d2&point=0d47a1&area=true&area_color=bbdefb&hide_border=true&custom_title=Contribution%20Activity" alt="Activity Graph" />
 </picture>
 
-<p align="center">
-  <sub>Auto-regenerated daily via GitHub Actions</sub>
-</p>
+<br><br>
+
+<img src="https://github-profile-trophy.vercel.app/?username=ThaiVietPhat&theme=gitdimmed&no-frame=true&no-bg=true&row=1&column=6" alt="Trophies" />
+
+<br><br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ThaiVietPhat/ThaiVietPhat/output/github-contribution-grid-snake-dark.svg" />
+  <img width="100%" src="https://raw.githubusercontent.com/ThaiVietPhat/ThaiVietPhat/output/github-contribution-grid-snake.svg" alt="GitHub Snake" />
+</picture>
+
+<br>
+<sub>Auto-regenerated daily via GitHub Actions 🐍</sub>
+
+</div>
 
 ---
 
-## Connect
+<h2 align="center">🎓 Experience & Education</h2>
+
+<div align="center">
+
+**Industrial University of Ho Chi Minh City (IUH)**
+<br>
+*Bachelor of Science in Computer Science* (2022 – Present)
+<br>
+Focusing on software engineering principles, algorithm optimization, and modern distributed systems architecture.
+
+</div>
+
+---
+
+<h2 align="center">📫 Let's Connect</h2>
+
+<p align="center">
+  Feel free to reach out if you want to collaborate, discuss tech, or just say hi!
+</p>
 
 <p align="center">
   <a href="mailto:thaiphat07031509@gmail.com">
-    <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+    <img src="https://img.shields.io/badge/Email-thaiphat07031509@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
   </a>
   <a href="https://linkedin.com/in/thai-viet-phat">
-    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
+    <img src="https://img.shields.io/badge/LinkedIn-Thai_Viet_Phat-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
   </a>
   <a href="https://github.com/ThaiVietPhat">
-    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://img.shields.io/badge/GitHub-ThaiVietPhat-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
   </a>
 </p>
 
 <p align="center">
-  <sub>Open to Java Backend Intern / Fresher roles — Ho Chi Minh City</sub>
+  <sub><i>Currently seeking opportunities for Java Backend Intern / Fresher roles in Ho Chi Minh City.</i></sub>
 </p>
 
-<img src="assets/footer.svg" width="100%" alt="footer" />
+<p align="center">
+  <img src="assets/footer.svg" width="100%" alt="Footer Banner" />
+</p>
