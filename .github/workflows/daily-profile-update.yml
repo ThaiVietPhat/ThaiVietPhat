@@ -1,0 +1,43 @@
+name: 🔄 Daily Profile Update
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs every day at 00:00 UTC
+  workflow_dispatch:      # Allow manual trigger
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 🚀 Run update script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python .github/scripts/update_readme.py
+
+      - name: 🔀 Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs(profile): auto-update featured projects and tech stack"
+          title: "🔄 Auto-update Featured Projects"
+          body: "This PR was automatically generated to update the featured projects section based on the latest repository statistics."
+          branch: "auto-update-readme"
+          base: "main"
+          delete-branch: true

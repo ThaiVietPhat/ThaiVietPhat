@@ -143,43 +143,104 @@ public record Profile(
 
 <h2 align="center">🚀 Featured Projects</h2>
 
-### 💬 Zalo Clone — Scalable Real-Time Chat System
+<!-- START_FEATURED_PROJECTS -->
 
-> **Status:** Active Development | **Role:** Backend Architect & Developer
+### 💡 Shopee Clone Microservices
+
+> **Status:** Active | **Stars:** ⭐ 1
 >
-> A robust, full-featured messaging platform featuring real-time communication, AI integration, and secure media processing.
+> E-commerce microservices platform inspired by Shopee — Spring Boot 3, Kafka, Redis, Docker
 
 <table>
 <tr>
-<th width="50%">⚡ Architecture & Real-Time</th>
-<th width="50%">🛡️ Security & AI Integration</th>
+<th width="100%">🛠️ Technical Highlights</th>
 </tr>
 <tr>
 <td valign="top">
 
-- **WebSocket/STOMP:** Dual-channel routing (`/topic` broadcasts + per-user queues).
-- **Message Lifecycle:** Real-time push for `SENT → DELIVERED → SEEN` states.
-- **Optimized Storage:** Zero N+1 queries via batch history pagination.
-- **Media Pipeline:** AWS S3 integration with presigned URLs and `206 Partial Content` streaming.
-
-</td>
-<td valign="top">
-
-- **Stateless Auth:** JWT HS256 with dynamic `tokenVersion` claims for instant remote logouts.
-- **Interceptor Security:** Strict JWT validation on every WebSocket `CONNECT` frame.
-- **Smart AI:** Integrated **Spring AI + Groq** for personal assistant bots and structured LLM Smart Replies.
-- **Admin Analytics:** RBAC module with immutable audit logging and real-time metric tracking.
+- **Spring Boot:** Robust backend application using Spring Boot.
+- **Microservices:** Scalable distributed microservices architecture.
+- **Apache Kafka:** Event-driven architecture and real-time messaging.
+- **Redis:** High-performance caching and distributed sessions.
+- **Docker:** Containerized deployment and environment consistency.
 
 </td>
 </tr>
 </table>
 
 <p>
-  <a href="https://github.com/ThaiVietPhat/zalo-clone">
+  <a href="https://github.com/ThaiVietPhat/shopee-clone-microservices">
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
-  <img src="https://img.shields.io/badge/Stack-Java_21_|_Spring_Boot_3-6DB33F?style=for-the-badge&logo=spring" />
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
+  <img src="https://img.shields.io/badge/Microservices-E34F26?style=for-the-badge&logo=spring" />
+  <img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka" />
 </p>
+
+---
+
+### 💡 Pbank Microservice
+
+> **Status:** Active | **Stars:** ⭐ 1
+>
+> A high-performance banking microservices architecture built with Java/Kotlin, Spring Boot, and Cloud-native patterns.
+
+<table>
+<tr>
+<th width="100%">🛠️ Technical Highlights</th>
+</tr>
+<tr>
+<td valign="top">
+
+- **Java:** Backend development using Java.
+- **Spring Boot:** Robust backend application using Spring Boot.
+- **Microservices:** Scalable distributed microservices architecture.
+
+</td>
+</tr>
+</table>
+
+<p>
+  <a href="https://github.com/ThaiVietPhat/pbank-microservice">
+    <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
+  <img src="https://img.shields.io/badge/Microservices-E34F26?style=for-the-badge&logo=spring" />
+</p>
+
+---
+
+### 💡 Zalo Fullstack App
+
+> **Status:** Active | **Stars:** ⭐ 1
+>
+> Full-stack chat platform with real-time messaging, AI assistant, session management, and admin RBAC | Spring Boot + React
+
+<table>
+<tr>
+<th width="100%">🛠️ Technical Highlights</th>
+</tr>
+<tr>
+<td valign="top">
+
+- **Spring Boot:** Robust backend application using Spring Boot.
+
+</td>
+</tr>
+</table>
+
+<p>
+  <a href="https://github.com/ThaiVietPhat/zalo-fullstack-app">
+    <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
+</p>
+
+---
+
+
+<!-- END_FEATURED_PROJECTS -->
 
 ---
 
