@@ -163,6 +163,9 @@ public record Profile(
 - **Apache Kafka:** Event-driven architecture and real-time messaging.
 - **Redis:** High-performance caching and distributed sessions.
 - **Docker:** Containerized deployment and environment consistency.
+- **Java:** Backend development using Java.
+- **HTML5:** Semantic markup language.
+- **JWT:** Stateless authentication via JSON Web Tokens.
 
 </td>
 </tr>
@@ -195,6 +198,7 @@ public record Profile(
 - **Java:** Backend development using Java.
 - **Spring Boot:** Robust backend application using Spring Boot.
 - **Microservices:** Scalable distributed microservices architecture.
+- **Kotlin:** Modern backend development using Kotlin.
 
 </td>
 </tr>
@@ -225,6 +229,11 @@ public record Profile(
 <td valign="top">
 
 - **Spring Boot:** Robust backend application using Spring Boot.
+- **React:** Interactive user interfaces using React.
+- **Java:** Backend development using Java.
+- **JavaScript:** Frontend and interactive web elements.
+- **CSS3:** Styling web applications.
+- **HTML5:** Semantic markup language.
 
 </td>
 </tr>
@@ -235,6 +244,8 @@ public record Profile(
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react" />
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
 </p>
 
 ---
