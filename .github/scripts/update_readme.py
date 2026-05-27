@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import re
+import base64
 
 GITHUB_USERNAME = "ThaiVietPhat"
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
@@ -21,6 +22,17 @@ TOPIC_TECH_MAP = {
     "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
     "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
     "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
+    "python": ("Python", "3776AB", "python", "Scripting and automation using Python."),
+    "javascript": ("JavaScript", "F7DF1E", "javascript", "Frontend and interactive web elements."),
+    "typescript": ("TypeScript", "3178C6", "typescript", "Strongly typed scalable web applications."),
+    "react": ("React", "61DAFB", "react", "Interactive user interfaces using React."),
+    "aws": ("AWS", "FF9900", "amazon-aws", "Cloud deployment and scalable infrastructure."),
+    "hibernate": ("Hibernate", "59666C", "hibernate", "Object-relational mapping and database access."),
+    "junit": ("JUnit 5", "25A162", "junit5", "Automated unit testing and quality assurance."),
+    "flyway": ("Flyway", "CC0200", "flyway", "Database migrations."),
+    "kotlin": ("Kotlin", "7F52FF", "kotlin", "Modern backend development using Kotlin."),
+    "html": ("HTML5", "E34F26", "html5", "Semantic markup language."),
+    "css": ("CSS3", "1572B6", "css3", "Styling web applications.")
 }
 
 def get_headers():
@@ -51,6 +63,27 @@ def fetch_top_repositories():
     top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
     return top_repos[:3]
 
+
+def fetch_repo_languages(repo_name):
+    url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/languages"
+    response = requests.get(url, headers=get_headers())
+    if response.status_code == 200:
+        return response.json()
+    return {}
+
+
+def fetch_file_content(repo_name, file_path):
+    url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/contents/{file_path}"
+    response = requests.get(url, headers=get_headers())
+    if response.status_code == 200:
+        file_data = response.json()
+        if "content" in file_data:
+            try:
+                return base64.b64decode(file_data["content"]).decode('utf-8')
+            except Exception as e:
+                print(f"Error decoding {file_path}: {e}")
+    return None
+
 def analyze_repo(repo):
     """Analyzes a repository to extract relevant tech descriptions."""
     print(f"Analyzing {repo['name']}...")
@@ -74,12 +107,38 @@ def analyze_repo(repo):
             tech_stack.append(val)
             added_techs.add(key)
 
-    # Fallback to language if no recognized topics
-    if not tech_stack and repo.get("language"):
-        lang = repo["language"].lower()
-        if lang in TOPIC_TECH_MAP and lang not in added_techs:
-            tech_stack.append(TOPIC_TECH_MAP[lang])
-            added_techs.add(lang)
+
+    # Fetch languages from GitHub API
+    languages = fetch_repo_languages(repo["name"])
+    for lang in languages.keys():
+        lang_lower = lang.lower()
+        if lang_lower in TOPIC_TECH_MAP and lang_lower not in added_techs:
+            tech_stack.append(TOPIC_TECH_MAP[lang_lower])
+            added_techs.add(lang_lower)
+
+
+
+    # Scan config files for dependencies
+    config_files = ["pom.xml", "build.gradle", "build.gradle.kts", "package.json"]
+    for file_path in config_files:
+        file_content = fetch_file_content(repo["name"], file_path)
+        if file_content:
+            for key, val in TOPIC_TECH_MAP.items():
+                if key not in added_techs and re.search(r'\b' + re.escape(key) + r'\b', file_content, re.IGNORECASE):
+                    tech_stack.append(val)
+                    added_techs.add(key)
+                elif key == "spring-boot" and "spring-boot" not in added_techs and "spring-boot" in file_content:
+                    tech_stack.append(val)
+                    added_techs.add(key)
+                elif key == "jwt" and "jwt" not in added_techs and ("jsonwebtoken" in file_content or "jwt" in file_content):
+                    tech_stack.append(val)
+                    added_techs.add(key)
+                elif key == "redis" and "redis" not in added_techs and ("spring-boot-starter-data-redis" in file_content or "redis" in file_content):
+                     tech_stack.append(val)
+                     added_techs.add(key)
+                elif key == "kafka" and "kafka" not in added_techs and ("spring-kafka" in file_content or "kafka" in file_content):
+                     tech_stack.append(val)
+                     added_techs.add(key)
 
     return tech_stack
 
