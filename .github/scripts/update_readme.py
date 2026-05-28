@@ -23,11 +23,37 @@ TOPIC_TECH_MAP = {
     "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
 }
 
+import base64
+
 def get_headers():
     headers = {"Accept": "application/vnd.github.v3+json"}
     if GITHUB_TOKEN:
         headers["Authorization"] = f"token {GITHUB_TOKEN}"
     return headers
+
+def get_repo_languages(repo_name):
+    url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/languages"
+    response = requests.get(url, headers=get_headers())
+    if response.status_code == 200:
+        return response.json()
+    return {}
+
+def get_file_content(repo_name, filepath):
+    url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/contents/{filepath}"
+    response = requests.get(url, headers=get_headers())
+    if response.status_code == 200:
+        data = response.json()
+        if isinstance(data, dict) and "content" in data:
+            try:
+                return base64.b64decode(data["content"]).decode("utf-8")
+            except Exception:
+                pass
+    return None
+
+def check_path_exists(repo_name, filepath):
+    url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/contents/{filepath}"
+    response = requests.get(url, headers=get_headers())
+    return response.status_code == 200
 
 def fetch_top_repositories():
     """Fetches the user's top repositories based on star count and updates."""
@@ -54,32 +80,77 @@ def fetch_top_repositories():
 def analyze_repo(repo):
     """Analyzes a repository to extract relevant tech descriptions."""
     print(f"Analyzing {repo['name']}...")
+    repo_name = repo["name"]
     topics = repo.get("topics", [])
     description = repo.get("description", "") or ""
 
     tech_stack = []
     added_techs = set()
 
-    for topic in topics:
-        if topic in TOPIC_TECH_MAP and topic not in added_techs:
-             tech_stack.append(TOPIC_TECH_MAP[topic])
-             added_techs.add(topic)
+    def add_tech(key):
+        if key in TOPIC_TECH_MAP and key not in added_techs:
+            tech_stack.append(TOPIC_TECH_MAP[key])
+            added_techs.add(key)
 
-    # Fallback to scanning description for keywords if topics are sparse
+    # 1. Topics
+    for topic in topics:
+        add_tech(topic)
+
+    # 2. Languages API
+    languages = get_repo_languages(repo_name)
+    for lang in languages:
+        add_tech(lang.lower())
+
+    # 3. Dependency files
+    pom_xml = get_file_content(repo_name, "pom.xml")
+    if pom_xml:
+        add_tech("java")
+        if "spring-boot" in pom_xml: add_tech("spring-boot")
+        if "spring-cloud" in pom_xml: add_tech("microservices")
+        if "spring-kafka" in pom_xml or "kafka-clients" in pom_xml: add_tech("kafka")
+        if "spring-data-redis" in pom_xml or "jedis" in pom_xml: add_tech("redis")
+        if "jjwt" in pom_xml or "java-jwt" in pom_xml: add_tech("jwt")
+        if "mysql-connector" in pom_xml: add_tech("mysql")
+        if "postgresql" in pom_xml: add_tech("postgresql")
+        if "spring-data-mongodb" in pom_xml: add_tech("mongodb")
+        if "spring-security" in pom_xml: add_tech("spring-security")
+        if "spring-boot-starter-websocket" in pom_xml: add_tech("websocket")
+
+    package_json = get_file_content(repo_name, "package.json")
+    if package_json:
+        if "jsonwebtoken" in package_json: add_tech("jwt")
+        if "socket.io" in package_json or "ws" in package_json: add_tech("websocket")
+        if "redis" in package_json or "ioredis" in package_json: add_tech("redis")
+        if "kafkajs" in package_json: add_tech("kafka")
+        if "mysql" in package_json or "mysql2" in package_json: add_tech("mysql")
+        if "pg" in package_json: add_tech("postgresql")
+        if "mongodb" in package_json or "mongoose" in package_json: add_tech("mongodb")
+
+    build_gradle = get_file_content(repo_name, "build.gradle")
+    if build_gradle:
+        add_tech("java")
+        if "spring-boot" in build_gradle: add_tech("spring-boot")
+        if "spring-security" in build_gradle: add_tech("spring-security")
+
+    dockerfile = get_file_content(repo_name, "Dockerfile")
+    if dockerfile or get_file_content(repo_name, "docker-compose.yml"):
+        add_tech("docker")
+
+    # Kubernetes manifests or helm charts check could be complex,
+    # but we check if typical k8s directory exists
+    if check_path_exists(repo_name, "k8s") or check_path_exists(repo_name, "kubernetes"):
+        add_tech("kubernetes")
+
+    # 4. Fallback to scanning description for keywords
     for key, val in TOPIC_TECH_MAP.items():
         if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
-            tech_stack.append(val)
-            added_techs.add(key)
+            add_tech(key)
         elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
-            tech_stack.append(val)
-            added_techs.add(key)
+            add_tech(key)
 
-    # Fallback to language if no recognized topics
+    # 5. Fallback to repository language property
     if not tech_stack and repo.get("language"):
-        lang = repo["language"].lower()
-        if lang in TOPIC_TECH_MAP and lang not in added_techs:
-            tech_stack.append(TOPIC_TECH_MAP[lang])
-            added_techs.add(lang)
+        add_tech(repo["language"].lower())
 
     return tech_stack
 

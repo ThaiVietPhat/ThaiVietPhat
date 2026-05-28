@@ -158,11 +158,13 @@ public record Profile(
 <tr>
 <td valign="top">
 
+- **Java:** Backend development using Java.
 - **Spring Boot:** Robust backend application using Spring Boot.
 - **Microservices:** Scalable distributed microservices architecture.
+- **JWT:** Stateless authentication via JSON Web Tokens.
+- **Docker:** Containerized deployment and environment consistency.
 - **Apache Kafka:** Event-driven architecture and real-time messaging.
 - **Redis:** High-performance caching and distributed sessions.
-- **Docker:** Containerized deployment and environment consistency.
 
 </td>
 </tr>
@@ -172,9 +174,9 @@ public record Profile(
   <a href="https://github.com/ThaiVietPhat/shopee-clone-microservices">
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
   <img src="https://img.shields.io/badge/Microservices-E34F26?style=for-the-badge&logo=spring" />
-  <img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka" />
 </p>
 
 ---
@@ -224,6 +226,7 @@ public record Profile(
 <tr>
 <td valign="top">
 
+- **Java:** Backend development using Java.
 - **Spring Boot:** Robust backend application using Spring Boot.
 
 </td>
@@ -234,6 +237,7 @@ public record Profile(
   <a href="https://github.com/ThaiVietPhat/zalo-fullstack-app">
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
 </p>
 
