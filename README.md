@@ -151,24 +151,46 @@ public record Profile(
 >
 > E-commerce microservices platform inspired by Shopee — Spring Boot 3, Kafka, Redis, Docker
 
+<details>
+<summary><b>🛠️ Technical Highlights & Stack</b></summary>
+<br>
+
 <table>
 <tr>
-<th width="100%">🛠️ Technical Highlights</th>
+<th width="30%">Technology</th>
+<th width="70%">Implementation Details</th>
 </tr>
 <tr>
-<td valign="top">
-
-- **Java:** Backend development using Java.
-- **Spring Boot:** Robust backend application using Spring Boot.
-- **Microservices:** Scalable distributed microservices architecture.
-- **JWT:** Stateless authentication via JSON Web Tokens.
-- **Docker:** Containerized deployment and environment consistency.
-- **Apache Kafka:** Event-driven architecture and real-time messaging.
-- **Redis:** High-performance caching and distributed sessions.
-
-</td>
+<td align="center"><img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java" /></td>
+<td>Backend development using Java.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot" /></td>
+<td>Robust backend application using Spring Boot.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Microservices-E34F26?style=flat-square&logo=spring&logoColor=white" alt="Microservices" /></td>
+<td>Scalable distributed microservices architecture.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white" alt="JWT" /></td>
+<td>Stateless authentication via JSON Web Tokens.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" /></td>
+<td>Containerized deployment and environment consistency.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=flat-square&logo=apache-kafka&logoColor=white" alt="Apache Kafka" /></td>
+<td>Event-driven architecture and real-time messaging.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis" /></td>
+<td>High-performance caching and distributed sessions.</td>
 </tr>
 </table>
+
+</details>
 
 <p>
   <a href="https://github.com/ThaiVietPhat/shopee-clone-microservices">
@@ -187,20 +209,30 @@ public record Profile(
 >
 > A high-performance banking microservices architecture built with Java/Kotlin, Spring Boot, and Cloud-native patterns.
 
+<details>
+<summary><b>🛠️ Technical Highlights & Stack</b></summary>
+<br>
+
 <table>
 <tr>
-<th width="100%">🛠️ Technical Highlights</th>
+<th width="30%">Technology</th>
+<th width="70%">Implementation Details</th>
 </tr>
 <tr>
-<td valign="top">
-
-- **Java:** Backend development using Java.
-- **Spring Boot:** Robust backend application using Spring Boot.
-- **Microservices:** Scalable distributed microservices architecture.
-
-</td>
+<td align="center"><img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java" /></td>
+<td>Backend development using Java.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot" /></td>
+<td>Robust backend application using Spring Boot.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Microservices-E34F26?style=flat-square&logo=spring&logoColor=white" alt="Microservices" /></td>
+<td>Scalable distributed microservices architecture.</td>
 </tr>
 </table>
+
+</details>
 
 <p>
   <a href="https://github.com/ThaiVietPhat/pbank-microservice">
@@ -219,19 +251,26 @@ public record Profile(
 >
 > Full-stack chat platform with real-time messaging, AI assistant, session management, and admin RBAC | Spring Boot + React
 
+<details>
+<summary><b>🛠️ Technical Highlights & Stack</b></summary>
+<br>
+
 <table>
 <tr>
-<th width="100%">🛠️ Technical Highlights</th>
+<th width="30%">Technology</th>
+<th width="70%">Implementation Details</th>
 </tr>
 <tr>
-<td valign="top">
-
-- **Java:** Backend development using Java.
-- **Spring Boot:** Robust backend application using Spring Boot.
-
-</td>
+<td align="center"><img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java" /></td>
+<td>Backend development using Java.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot" /></td>
+<td>Robust backend application using Spring Boot.</td>
 </tr>
 </table>
+
+</details>
 
 <p>
   <a href="https://github.com/ThaiVietPhat/zalo-fullstack-app">
