@@ -19,6 +19,14 @@ TOPIC_TECH_MAP = {
     "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
     "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
     "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
+    "elasticsearch": ("Elasticsearch", "005571", "elasticsearch", "Distributed search and analytics engine."),
+    "graphql": ("GraphQL", "E10098", "graphql", "Query language for APIs."),
+    "grpc": ("gRPC", "244C5A", "grpc", "High-performance Remote Procedure Call framework."),
+    "rabbitmq": ("RabbitMQ", "FF6600", "rabbitmq", "Message broker for routing and queuing."),
+    "hibernate": ("Hibernate", "59666C", "hibernate", "Object-Relational Mapping framework."),
+    "aws": ("AWS", "FF9900", "amazon-aws", "Cloud computing services."),
+    "github-actions": ("GitHub Actions", "2088FF", "github-actions", "CI/CD and automation workflow."),
+    "react": ("React", "61DAFB", "react", "JavaScript library for building user interfaces."),
 }
 
 class GitHubClient:
@@ -72,7 +80,7 @@ class GitHubClient:
         repos = response.json()
         top_repos = []
         for repo in repos:
-            if not repo["fork"] and repo["name"] != self.username:
+            if not repo["fork"] and repo["name"] != self.username and repo.get("description"):
                  top_repos.append(repo)
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
@@ -141,6 +149,21 @@ class TechAnalyzer:
 
         if self.github_client.check_path_exists(repo_name, "k8s") or self.github_client.check_path_exists(repo_name, "kubernetes"):
             add_tech("kubernetes")
+
+        app_yml = self.github_client.get_file_content(repo_name, "src/main/resources/application.yml")
+        app_prop = self.github_client.get_file_content(repo_name, "src/main/resources/application.properties")
+
+        for config_file in [app_yml, app_prop]:
+            if config_file:
+                if "kafka" in config_file: add_tech("kafka")
+                if "redis" in config_file: add_tech("redis")
+                if "elasticsearch" in config_file: add_tech("elasticsearch")
+                if "rabbitmq" in config_file: add_tech("rabbitmq")
+                if "graphql" in config_file: add_tech("graphql")
+                if "aws" in config_file: add_tech("aws")
+
+        if self.github_client.check_path_exists(repo_name, ".github/workflows"):
+            add_tech("github-actions")
 
         # 4. Fallback scanning
         for key in TOPIC_TECH_MAP.keys():
