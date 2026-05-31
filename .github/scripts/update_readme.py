@@ -72,7 +72,7 @@ class GitHubClient:
         repos = response.json()
         top_repos = []
         for repo in repos:
-            if not repo["fork"] and repo["name"] != self.username:
+            if not repo["fork"] and repo["name"] != self.username and repo.get("description"):
                  top_repos.append(repo)
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
@@ -134,6 +134,17 @@ class TechAnalyzer:
             add_tech("java")
             if "spring-boot" in build_gradle: add_tech("spring-boot")
             if "spring-security" in build_gradle: add_tech("spring-security")
+
+        for app_config in ["application.yml", "application.properties", "src/main/resources/application.yml", "src/main/resources/application.properties"]:
+            config_content = self.github_client.get_file_content(repo_name, app_config)
+            if config_content:
+                add_tech("spring-boot")
+                if "redis" in config_content: add_tech("redis")
+                if "kafka" in config_content: add_tech("kafka")
+                if "mysql" in config_content: add_tech("mysql")
+                if "postgresql" in config_content: add_tech("postgresql")
+                if "mongodb" in config_content: add_tech("mongodb")
+                if "jwt" in config_content: add_tech("jwt")
 
         dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
         if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
