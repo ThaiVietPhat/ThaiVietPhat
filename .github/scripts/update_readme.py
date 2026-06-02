@@ -168,6 +168,19 @@ class TechAnalyzer:
         if self.github_client.check_path_exists(repo_name, "k8s") or self.github_client.check_path_exists(repo_name, "kubernetes"):
             add_tech("kubernetes")
 
+        # 3.5 Check configuration files
+        config_files = ["application.yml", "application.properties", "src/main/resources/application.yml", "src/main/resources/application.properties"]
+        for config_file in config_files:
+            content = self.github_client.get_file_content(repo_name, config_file)
+            if content:
+                for keyword, tech in POM_TECH_MAPPINGS.items():
+                    if keyword in content:
+                        add_tech(tech)
+                content_lower = content.lower()
+                for keyword in ['kafka', 'redis', 'mysql', 'postgresql', 'mongodb', 'jwt']:
+                    if keyword in content_lower:
+                        add_tech(keyword)
+
         # 4. Fallback scanning
         for key in TOPIC_TECH_MAP.keys():
             if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
