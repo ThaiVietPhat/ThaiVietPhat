@@ -3,6 +3,7 @@ import requests
 import json
 import re
 import base64
+from typing import Optional, List, Dict, Any, Tuple
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -21,15 +22,50 @@ TOPIC_TECH_MAP = {
     "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
 }
 
+POM_TECH_MAPPINGS = {
+    "spring-boot": "spring-boot",
+    "spring-cloud": "microservices",
+    "spring-kafka": "kafka",
+    "kafka-clients": "kafka",
+    "spring-data-redis": "redis",
+    "jedis": "redis",
+    "jjwt": "jwt",
+    "java-jwt": "jwt",
+    "mysql-connector": "mysql",
+    "postgresql": "postgresql",
+    "spring-data-mongodb": "mongodb",
+    "spring-security": "spring-security",
+    "spring-boot-starter-websocket": "websocket",
+}
+
+PACKAGE_JSON_TECH_MAPPINGS = {
+    "jsonwebtoken": "jwt",
+    "socket.io": "websocket",
+    "ws": "websocket",
+    "redis": "redis",
+    "ioredis": "redis",
+    "kafkajs": "kafka",
+    "mysql": "mysql",
+    "mysql2": "mysql",
+    "pg": "postgresql",
+    "mongodb": "mongodb",
+    "mongoose": "mongodb",
+}
+
+GRADLE_TECH_MAPPINGS = {
+    "spring-boot": "spring-boot",
+    "spring-security": "spring-security",
+}
+
 class GitHubClient:
-    def __init__(self, username, token=None):
+    def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
         self.headers = {"Accept": "application/vnd.github.v3+json"}
         if self.token:
             self.headers["Authorization"] = f"token {self.token}"
 
-    def get(self, url):
+    def get(self, url: str) -> Optional[requests.Response]:
         try:
             response = requests.get(url, headers=self.headers)
             if response.status_code == 404:
@@ -40,12 +76,12 @@ class GitHubClient:
             print(f"API request failed: {e}")
             return None
 
-    def get_repo_languages(self, repo_name):
+    def get_repo_languages(self, repo_name: str) -> Dict[str, int]:
         url = f"https://api.github.com/repos/{self.username}/{repo_name}/languages"
         response = self.get(url)
         return response.json() if response else {}
 
-    def get_file_content(self, repo_name, filepath):
+    def get_file_content(self, repo_name: str, filepath: str) -> Optional[str]:
         url = f"https://api.github.com/repos/{self.username}/{repo_name}/contents/{filepath}"
         response = self.get(url)
         if response:
@@ -57,12 +93,12 @@ class GitHubClient:
                     pass
         return None
 
-    def check_path_exists(self, repo_name, filepath):
+    def check_path_exists(self, repo_name: str, filepath: str) -> bool:
         url = f"https://api.github.com/repos/{self.username}/{repo_name}/contents/{filepath}"
         response = self.get(url)
         return response is not None
 
-    def fetch_top_repositories(self):
+    def fetch_top_repositories(self) -> List[Dict[str, Any]]:
         print("Fetching top repositories...")
         url = f"https://api.github.com/users/{self.username}/repos?sort=updated&per_page=100"
         response = self.get(url)
@@ -78,19 +114,19 @@ class GitHubClient:
         return top_repos[:3]
 
 class TechAnalyzer:
-    def __init__(self, github_client):
+    def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
 
-    def analyze_repo(self, repo):
+    def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
         print(f"Analyzing {repo_name}...")
         topics = repo.get("topics", [])
         description = repo.get("description", "") or ""
 
-        tech_stack = []
+        tech_stack: List[Tuple[str, str, str, str]] = []
         added_techs = set()
 
-        def add_tech(key):
+        def add_tech(key: str) -> None:
             if key in TOPIC_TECH_MAP and key not in added_techs:
                 tech_stack.append(TOPIC_TECH_MAP[key])
                 added_techs.add(key)
@@ -108,32 +144,22 @@ class TechAnalyzer:
         pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
         if pom_xml:
             add_tech("java")
-            if "spring-boot" in pom_xml: add_tech("spring-boot")
-            if "spring-cloud" in pom_xml: add_tech("microservices")
-            if "spring-kafka" in pom_xml or "kafka-clients" in pom_xml: add_tech("kafka")
-            if "spring-data-redis" in pom_xml or "jedis" in pom_xml: add_tech("redis")
-            if "jjwt" in pom_xml or "java-jwt" in pom_xml: add_tech("jwt")
-            if "mysql-connector" in pom_xml: add_tech("mysql")
-            if "postgresql" in pom_xml: add_tech("postgresql")
-            if "spring-data-mongodb" in pom_xml: add_tech("mongodb")
-            if "spring-security" in pom_xml: add_tech("spring-security")
-            if "spring-boot-starter-websocket" in pom_xml: add_tech("websocket")
+            for keyword, tech in POM_TECH_MAPPINGS.items():
+                if keyword in pom_xml:
+                    add_tech(tech)
 
         package_json = self.github_client.get_file_content(repo_name, "package.json")
         if package_json:
-            if "jsonwebtoken" in package_json: add_tech("jwt")
-            if "socket.io" in package_json or "ws" in package_json: add_tech("websocket")
-            if "redis" in package_json or "ioredis" in package_json: add_tech("redis")
-            if "kafkajs" in package_json: add_tech("kafka")
-            if "mysql" in package_json or "mysql2" in package_json: add_tech("mysql")
-            if "pg" in package_json: add_tech("postgresql")
-            if "mongodb" in package_json or "mongoose" in package_json: add_tech("mongodb")
+            for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
+                if keyword in package_json:
+                    add_tech(tech)
 
         build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
         if build_gradle:
             add_tech("java")
-            if "spring-boot" in build_gradle: add_tech("spring-boot")
-            if "spring-security" in build_gradle: add_tech("spring-security")
+            for keyword, tech in GRADLE_TECH_MAPPINGS.items():
+                if keyword in build_gradle:
+                    add_tech(tech)
 
         dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
         if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
@@ -156,7 +182,7 @@ class TechAnalyzer:
         return tech_stack
 
 class MarkdownGenerator:
-    def generate(self, repos, analyzer):
+    def generate(self, repos: List[Dict[str, Any]], analyzer: TechAnalyzer) -> str:
         md_content = ""
         for repo in repos:
             tech_stack = analyzer.analyze_repo(repo)
@@ -209,10 +235,10 @@ class MarkdownGenerator:
         return md_content
 
 class ReadmeUpdater:
-    def __init__(self, filepath="README.md"):
+    def __init__(self, filepath: str = "README.md"):
         self.filepath = filepath
 
-    def update(self, md_content):
+    def update(self, md_content: str) -> None:
         try:
             with open(self.filepath, "r") as f:
                 readme_data = f.read()
