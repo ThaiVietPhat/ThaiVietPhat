@@ -108,7 +108,7 @@ class GitHubClient:
         repos = response.json()
         top_repos = []
         for repo in repos:
-            if not repo["fork"] and repo["name"] != self.username:
+            if not repo["fork"] and repo["name"] != self.username and repo.get("description"):
                  top_repos.append(repo)
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
