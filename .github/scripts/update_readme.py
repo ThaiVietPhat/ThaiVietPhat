@@ -20,6 +20,8 @@ TOPIC_TECH_MAP = {
     "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
     "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
     "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
+    "spring-ai": ("Spring AI", "6DB33F", "spring", "AI Integration for modern applications."),
+    "react": ("React", "61DAFB", "react", "Frontend library for building user interfaces."),
 }
 
 POM_TECH_MAPPINGS = {
@@ -36,6 +38,7 @@ POM_TECH_MAPPINGS = {
     "spring-data-mongodb": "mongodb",
     "spring-security": "spring-security",
     "spring-boot-starter-websocket": "websocket",
+    "spring-ai": "spring-ai",
 }
 
 PACKAGE_JSON_TECH_MAPPINGS = {
@@ -50,6 +53,7 @@ PACKAGE_JSON_TECH_MAPPINGS = {
     "pg": "postgresql",
     "mongodb": "mongodb",
     "mongoose": "mongodb",
+    "react": "react",
 }
 
 GRADLE_TECH_MAPPINGS = {
