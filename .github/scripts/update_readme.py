@@ -57,6 +57,17 @@ GRADLE_TECH_MAPPINGS = {
     "spring-security": "spring-security",
 }
 
+CONFIG_TECH_MAPPINGS = {
+    "spring.redis": "redis",
+    "spring.kafka": "kafka",
+    "spring.data.mongodb": "mongodb",
+    "jdbc:mysql": "mysql",
+    "jdbc:postgresql": "postgresql",
+    "jwt.secret": "jwt",
+    "spring.security": "spring-security",
+    "websocket": "websocket"
+}
+
 class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
@@ -108,7 +119,7 @@ class GitHubClient:
         repos = response.json()
         top_repos = []
         for repo in repos:
-            if not repo["fork"] and repo["name"] != self.username:
+            if not repo["fork"] and repo["name"] != self.username and repo.get("description"):
                  top_repos.append(repo)
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
@@ -160,6 +171,18 @@ class TechAnalyzer:
             for keyword, tech in GRADLE_TECH_MAPPINGS.items():
                 if keyword in build_gradle:
                     add_tech(tech)
+
+        # Application Configuration Files
+        config_files = [
+            "application.yml", "application.properties",
+            "src/main/resources/application.yml", "src/main/resources/application.properties"
+        ]
+        for config_file in config_files:
+            content = self.github_client.get_file_content(repo_name, config_file)
+            if content:
+                for keyword, tech in CONFIG_TECH_MAPPINGS.items():
+                    if keyword in content:
+                        add_tech(tech)
 
         dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
         if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
