@@ -2,7 +2,7 @@ name: 🔄 Daily Profile Update
 
 on:
   schedule:
-    - cron: "0 0 * * *" # Runs every day at 00:00 UTC
+    - cron: "0 0 * * *" # Runs every day at 00:00 UTC (Scheduled to execute and create PR)
   workflow_dispatch:      # Allow manual trigger
 
 jobs:
