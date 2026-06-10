@@ -20,6 +20,10 @@ TOPIC_TECH_MAP = {
     "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
     "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
     "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
+    "react": ("React", "61DAFB", "react", "Interactive and dynamic user interfaces."),
+    "typescript": ("TypeScript", "3178C6", "typescript", "Strongly typed superset of JavaScript."),
+    "spring-modulith": ("Spring Modulith", "6DB33F", "spring", "Modular monolith architecture for maintainability."),
+    "elasticsearch": ("Elasticsearch", "005571", "elasticsearch", "Distributed search and analytics engine."),
 }
 
 POM_TECH_MAPPINGS = {
@@ -50,6 +54,8 @@ PACKAGE_JSON_TECH_MAPPINGS = {
     "pg": "postgresql",
     "mongodb": "mongodb",
     "mongoose": "mongodb",
+    "react": "react",
+    "typescript": "typescript",
 }
 
 GRADLE_TECH_MAPPINGS = {
@@ -108,7 +114,7 @@ class GitHubClient:
         repos = response.json()
         top_repos = []
         for repo in repos:
-            if not repo["fork"] and repo["name"] != self.username:
+            if not repo["fork"] and repo["name"] != self.username and repo.get("stargazers_count", 0) > 0:
                  top_repos.append(repo)
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
@@ -172,7 +178,7 @@ class TechAnalyzer:
         for key in TOPIC_TECH_MAP.keys():
             if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
                 add_tech(key)
-            elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
+            elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb', 'react', 'elasticsearch'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
                 add_tech(key)
 
         # 5. Language fallback
