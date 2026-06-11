@@ -57,6 +57,14 @@ GRADLE_TECH_MAPPINGS = {
     "spring-security": "spring-security",
 }
 
+CONFIG_TECH_MAPPINGS = {
+    "mysql": "mysql",
+    "postgresql": "postgresql",
+    "mongodb": "mongodb",
+    "redis": "redis",
+    "kafka": "kafka",
+}
+
 class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
@@ -108,7 +116,10 @@ class GitHubClient:
         repos = response.json()
         top_repos = []
         for repo in repos:
-            if not repo["fork"] and repo["name"] != self.username:
+            if (not repo.get("fork") and
+                repo.get("name") != self.username and
+                repo.get("description") and
+                repo.get("stargazers_count", 0) > 0):
                  top_repos.append(repo)
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
@@ -168,14 +179,26 @@ class TechAnalyzer:
         if self.github_client.check_path_exists(repo_name, "k8s") or self.github_client.check_path_exists(repo_name, "kubernetes"):
             add_tech("kubernetes")
 
-        # 4. Fallback scanning
+        # 4. Configuration files
+        config_files = [
+            "application.yml", "application.yaml", "application.properties",
+            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
+        ]
+        for config_file in config_files:
+            content = self.github_client.get_file_content(repo_name, config_file)
+            if content:
+                for keyword, tech in CONFIG_TECH_MAPPINGS.items():
+                    if keyword in content.lower():
+                        add_tech(tech)
+
+        # 5. Fallback scanning
         for key in TOPIC_TECH_MAP.keys():
             if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
                 add_tech(key)
             elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
                 add_tech(key)
 
-        # 5. Language fallback
+        # 6. Language fallback
         if not tech_stack and repo.get("language"):
             add_tech(repo["language"].lower())
 
