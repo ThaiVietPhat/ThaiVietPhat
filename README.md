@@ -145,11 +145,11 @@ public record Profile(
 
 <!-- START_FEATURED_PROJECTS -->
 
-### 💡 Shopee Clone Microservices
+### 💡 Shoppe Clone
 
 > **Status:** Active | **Stars:** ⭐ 1
 >
-> E-commerce microservices platform inspired by Shopee — Spring Boot 3, Kafka, Redis, Docker
+> Production-minded Shopee Clone built with Spring Boot 4 & Spring Modulith — covering concurrency-safe checkout, hybrid search, payment integration, and fail-closed auth.
 
 <details>
 <summary><b>🛠️ Technical Highlights & Stack</b></summary>
@@ -169,20 +169,24 @@ public record Profile(
 <td>Robust backend application using Spring Boot.</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Microservices-E34F26?style=flat-square&logo=spring&logoColor=white" alt="Microservices" /></td>
-<td>Scalable distributed microservices architecture.</td>
-</tr>
-<tr>
 <td align="center"><img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white" alt="JWT" /></td>
 <td>Stateless authentication via JSON Web Tokens.</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" /></td>
-<td>Containerized deployment and environment consistency.</td>
+<td align="center"><img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL" /></td>
+<td>Advanced relational database management.</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=flat-square&logo=apache-kafka&logoColor=white" alt="Apache Kafka" /></td>
-<td>Event-driven architecture and real-time messaging.</td>
+<td align="center"><img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=spring-security&logoColor=white" alt="Spring Security" /></td>
+<td>Secure authentication and authorization.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/WebSocket-010101?style=flat-square&logo=socket.io&logoColor=white" alt="WebSocket" /></td>
+<td>Real-time bidirectional communication.</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" /></td>
+<td>Containerized deployment and environment consistency.</td>
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis" /></td>
@@ -193,54 +197,12 @@ public record Profile(
 </details>
 
 <p>
-  <a href="https://github.com/ThaiVietPhat/shopee-clone-microservices">
+  <a href="https://github.com/ThaiVietPhat/shoppe-clone">
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
   <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
-  <img src="https://img.shields.io/badge/Microservices-E34F26?style=for-the-badge&logo=spring" />
-</p>
-
----
-
-### 💡 Pbank Microservice
-
-> **Status:** Active | **Stars:** ⭐ 1
->
-> A high-performance banking microservices architecture built with Java/Kotlin, Spring Boot, and Cloud-native patterns.
-
-<details>
-<summary><b>🛠️ Technical Highlights & Stack</b></summary>
-<br>
-
-<table>
-<tr>
-<th width="30%">Technology</th>
-<th width="70%">Implementation Details</th>
-</tr>
-<tr>
-<td align="center"><img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java" /></td>
-<td>Backend development using Java.</td>
-</tr>
-<tr>
-<td align="center"><img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot" /></td>
-<td>Robust backend application using Spring Boot.</td>
-</tr>
-<tr>
-<td align="center"><img src="https://img.shields.io/badge/Microservices-E34F26?style=flat-square&logo=spring&logoColor=white" alt="Microservices" /></td>
-<td>Scalable distributed microservices architecture.</td>
-</tr>
-</table>
-
-</details>
-
-<p>
-  <a href="https://github.com/ThaiVietPhat/pbank-microservice">
-    <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
-  </a>
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
-  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
-  <img src="https://img.shields.io/badge/Microservices-E34F26?style=for-the-badge&logo=spring" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens" />
 </p>
 
 ---
