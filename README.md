@@ -5,7 +5,7 @@
 <h1 align="center">Hi there! 👋 I'm Thai Viet Phat</h1>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=22&duration=3200&pause=800&color=58A6FF&center=true&vCenter=true&width=600&height=50&lines=Software+Engineer;Java+%7C+Spring+Boot+%7C+Microservices;Building+Scalable+REST+APIs;Designing+Real-Time+Systems;Cloud+Native+%7C+AWS+%7C+Docker" alt="typing animation" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=22&duration=3200&pause=800&color=58A6FF&center=true&vCenter=true&width=600&height=50&lines=Java+Backend+Developer;Spring+Boot+%7C+Spring+Modulith+%7C+Kafka;Real-Time+Systems+%7C+WebSocket+%7C+STOMP;AI+Integration+%7C+Spring+AI+%7C+pgvector;Building+Production-Ready+APIs" alt="typing animation" />
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
     <img src="https://img.shields.io/github/followers/ThaiVietPhat?label=Followers&style=for-the-badge&color=1a73e8" alt="Followers" />
   </a>
   <img src="https://img.shields.io/badge/Focus-Backend%20Engineering-3fb950?style=for-the-badge" alt="Focus" />
-  <img src="https://img.shields.io/badge/Status-Open%20to%20Work-3fb950?style=for-the-badge" alt="Status" />
+  <img src="https://img.shields.io/badge/Status-Interning%20@%20FPT%20Software-3fb950?style=for-the-badge" alt="Status" />
 </p>
 
 ---
@@ -28,10 +28,10 @@
 </p>
 
 <p align="center">
-  <strong>Transforming complex problems into elegant, scalable backend solutions.</strong>
+  <strong>Building production-minded Java backends — from real-time chat to e-commerce at scale.</strong>
 </p>
 
-I am a passionate **Java Backend Developer** based in Ho Chi Minh City, Vietnam. With a strong foundation in Computer Science and a deep interest in distributed systems, I specialize in architecting high-performance APIs, real-time communication networks, and cloud-native microservices. I thrive in environments that challenge me to build robust, secure, and production-ready applications.
+I am a **Java Backend Developer** based in Ho Chi Minh City, Vietnam, currently interning at **FPT Software**. Final-year Computer Science student at IUH with hands-on experience building full-stack applications with real-time messaging, payment integration, semantic search, and AI features. I focus on writing defensible, testable, production-ready code.
 
 <details>
 <summary><b>👨‍💻 View Developer Profile (Java)</b></summary>
@@ -47,15 +47,16 @@ public record Profile(
 ) {
     public static final Profile ME = new Profile(
         "Thai Viet Phat",
-        "Java Backend Developer (Intern / Fresher)",
+        "Java Backend Developer — Intern @ FPT Software",
         "Industrial University of Ho Chi Minh City — CS (2022 - Present)",
         "Ho Chi Minh City, Vietnam",
         new String[] {
-            "RESTful APIs & Microservices Architecture",
-            "Real-time Systems (WebSocket, Kafka)",
-            "Stateless Security (JWT, OAuth2)",
-            "AI Integration (Spring AI, LLMs)",
-            "Cloud Deployments (Docker, Kubernetes, AWS)"
+            "RESTful APIs & Modular Monolith / Microservices Architecture",
+            "Real-Time Systems (WebSocket STOMP, Event-Driven with Spring Events)",
+            "Stateless Security (JWT rotation, refresh token family, OAuth2)",
+            "AI Integration (Spring AI, pgvector semantic search, Groq/Gemini)",
+            "Payment Integration (VNPay sandbox, idempotent webhook handling)",
+            "Cloud Storage (Cloudflare R2), Observability (Actuator, Prometheus)"
         }
     );
 
@@ -76,17 +77,17 @@ public record Profile(
     <td width="50%" valign="top">
       <h3>🛠️ Current Focus</h3>
       <ul>
-        <li>Mastering <b>Spring Boot 3.x</b> and <b>Java 21</b> features.</li>
-        <li>Exploring <b>Microservices</b> patterns and Event-Driven Architectures with <b>Apache Kafka</b>.</li>
-        <li>Deepening knowledge of <b>Cloud-Native</b> deployments using <b>Docker & Kubernetes</b>.</li>
+        <li>Interning at <b>FPT Software</b> — applying Java backend skills in a real enterprise environment.</li>
+        <li>Completing graduation thesis: <b>Shopee Clone</b> — a production-minded modular monolith with full buyer/seller/admin flow.</li>
+        <li>Deepening PostgreSQL internals, JPA/Hibernate, and Spring Boot testing.</li>
       </ul>
     </td>
     <td width="50%" valign="top">
       <h3>🚀 What's Next</h3>
       <ul>
-        <li>Diving deeper into <b>System Design</b> and massive scale architectures.</li>
-        <li>Contributing to prominent Open Source software.</li>
-        <li>Exploring advanced <b>Spring AI</b> use cases for modern smart applications.</li>
+        <li>Ship live demo for Shopee Clone and complete the frontend.</li>
+        <li>DSA practice via <b>NeetCode 150</b> (1–2 problems/day, Java).</li>
+        <li>Targeting Java Backend roles at fintech/product companies after internship.</li>
       </ul>
     </td>
   </tr>
@@ -99,57 +100,59 @@ public record Profile(
 <div align="center">
 
 **Languages & Core Frameworks**<br>
-<img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
+<img src="https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
 <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" />
 <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=spring-security&logoColor=white" />
-<img src="https://img.shields.io/badge/Spring_Cloud-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
-<img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white" />
-<img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white" />
-<img src="https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socket.io&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_Modulith-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
+<img src="https://img.shields.io/badge/Spring_AI-6DB33F?style=for-the-badge&logo=spring&logoColor=white" />
+<img src="https://img.shields.io/badge/Hibernate_JPA-59666C?style=for-the-badge&logo=hibernate&logoColor=white" />
+<img src="https://img.shields.io/badge/WebSocket_STOMP-010101?style=for-the-badge&logo=socket.io&logoColor=white" />
 
 <br><br>
 
-**Databases & Messaging**<br>
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+**Databases, Search & Messaging**<br>
 <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
-<img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
 <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" />
-<img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white" />
+<img src="https://img.shields.io/badge/Elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white" />
+<img src="https://img.shields.io/badge/pgvector-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+<img src="https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white" />
 
 <br><br>
 
 **DevOps, Cloud & Tools**<br>
 <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
-<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" />
-<img src="https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white" />
 <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" />
-<img src="https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white" />
+<img src="https://img.shields.io/badge/Cloudflare_R2-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" />
+<img src="https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white" />
 <img src="https://img.shields.io/badge/JUnit_5-25A162?style=for-the-badge&logo=junit5&logoColor=white" />
-<img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
-<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" />
+<img src="https://img.shields.io/badge/Testcontainers-9B59B6?style=for-the-badge&logo=docker&logoColor=white" />
+<img src="https://img.shields.io/badge/Swagger_OpenAPI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
 
 </div>
 
 ---
 
-<h2 align="center">🏆 Highlights & Achievements</h2>
+<h2 align="center">🏆 Technical Highlights</h2>
 
-- 🌟 Developed a **Real-Time Chat Application (Zalo Clone)** capable of handling instant messaging and media sharing with minimal latency.
-- 🔒 Implemented advanced **stateless security paradigms** using embedded token versioning in JWTs.
-- 🤖 Successfully integrated **Generative AI capabilities** into traditional Java backend applications using Spring AI.
-- 📈 Maintained a consistent track record of continuous learning and contribution, as reflected in my daily GitHub activity and streak.
+- 🔄 Implemented **refresh token rotation with family tracking** — reuse detection forces logout across all sessions
+- 🔒 **JWT with `tokenVersion`** embedded in claims — server-side invalidation without a blocklist for 1-1 sessions
+- 💳 **VNPay sandbox integration** with signed webhook verification and idempotent duplicate-webhook handling
+- 🛡️ **Optimistic locking + explicit lock ordering** for inventory reservations — prevents double-spend and deadlocks at checkout
+- 🔍 **Elasticsearch keyword/facet search + pgvector semantic search** with graceful PostgreSQL fallback when ES is degraded
+- 🤖 **Spring AI integration** (Groq/LLaMA for Zalo; Google Gemini for Shopee) — AI chat, smart reply, message summarization, product recommendations
+- 📦 **Spring Modulith event publication registry** for reliable cross-module side effects (indexing, notification, email) without tight coupling
+- 📊 **Prometheus/Micrometer observability** with custom metrics for scheduler throughput, AI fallback rate, and search degradation
 
 ---
 
 <h2 align="center">🚀 Featured Projects</h2>
 
-<!-- START_FEATURED_PROJECTS -->
+### 💡 Shopee Clone — Modular Monolith (Graduation Thesis)
 
-### 💡 Shopee Clone Microservices
-
-> **Status:** Active | **Stars:** ⭐ 1
+> **Status:** Active — Backend complete, frontend in progress
 >
-> E-commerce microservices platform inspired by Shopee — Spring Boot 3, Kafka, Redis, Docker
+> Production-minded Shopee-style e-commerce backend built with Spring Boot + Spring Modulith. Covers the full buyer/seller/admin flow: authentication, catalog, inventory, cart, checkout, payment, fulfillment, search, semantic recommendations, reviews, notifications, and real-time chat.
 
 <details>
 <summary><b>🛠️ Technical Highlights & Stack</b></summary>
@@ -161,53 +164,59 @@ public record Profile(
 <th width="70%">Implementation Details</th>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java" /></td>
-<td>Backend development using Java.</td>
+<td align="center"><img src="https://img.shields.io/badge/Java_21-ED8B00?style=flat-square&logo=openjdk&logoColor=white" /></td>
+<td>Java 21 with sealed interfaces, records, pattern matching</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot" /></td>
-<td>Robust backend application using Spring Boot.</td>
+<td align="center"><img src="https://img.shields.io/badge/Spring_Boot_4-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" /></td>
+<td>Spring Boot 4 + Spring Modulith for strict module boundary enforcement via Spring Events</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Microservices-E34F26?style=flat-square&logo=spring&logoColor=white" alt="Microservices" /></td>
-<td>Scalable distributed microservices architecture.</td>
+<td align="center"><img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white" /></td>
+<td>Primary DB with Flyway migrations; Hibernate in validate mode</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white" alt="JWT" /></td>
-<td>Stateless authentication via JSON Web Tokens.</td>
+<td align="center"><img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" /></td>
+<td>Redis-backed cart, refresh token blacklist, rate limiting</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" /></td>
-<td>Containerized deployment and environment consistency.</td>
+<td align="center"><img src="https://img.shields.io/badge/Elasticsearch-005571?style=flat-square&logo=elasticsearch&logoColor=white" /></td>
+<td>Keyword/facet search with automatic PostgreSQL LIKE fallback</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=flat-square&logo=apache-kafka&logoColor=white" alt="Apache Kafka" /></td>
-<td>Event-driven architecture and real-time messaging.</td>
+<td align="center"><img src="https://img.shields.io/badge/pgvector-316192?style=flat-square&logo=postgresql&logoColor=white" /></td>
+<td>Semantic product search and AI-backed recommendations via pgvector + Gemini</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis" /></td>
-<td>High-performance caching and distributed sessions.</td>
+<td align="center"><img src="https://img.shields.io/badge/VNPay-CC0200?style=flat-square&logoColor=white" /></td>
+<td>VNPay sandbox payment with signed webhook, idempotent replay handling, and payment timeout scheduler</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Testcontainers-9B59B6?style=flat-square&logo=docker&logoColor=white" /></td>
+<td>Full integration test suite with Testcontainers (PostgreSQL, Redis, ES); JaCoCo 80% coverage gate</td>
 </tr>
 </table>
 
 </details>
 
 <p>
-  <a href="https://github.com/ThaiVietPhat/shopee-clone-microservices">
+  <a href="https://github.com/ThaiVietPhat/shoppe-clone">
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
-  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
-  <img src="https://img.shields.io/badge/Microservices-E34F26?style=for-the-badge&logo=spring" />
+  <img src="https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk" />
+  <img src="https://img.shields.io/badge/Spring_Boot_4-6DB33F?style=for-the-badge&logo=spring-boot" />
+  <img src="https://img.shields.io/badge/Spring_Modulith-6DB33F?style=for-the-badge&logo=spring" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql" />
+  <img src="https://img.shields.io/badge/Elasticsearch-005571?style=for-the-badge&logo=elasticsearch" />
 </p>
 
 ---
 
-### 💡 Pbank Microservice
+### 💡 Zalo Clone — Full-Stack Real-Time Chat
 
-> **Status:** Active | **Stars:** ⭐ 1
+> **Status:** Complete — Deployed · [🌐 Live Demo](https://zalo-fullstack-app.vercel.app)
 >
-> A high-performance banking microservices architecture built with Java/Kotlin, Spring Boot, and Cloud-native patterns.
+> Full-stack chat platform with real-time 1-1 & group messaging, WebRTC voice/video calls, AI assistant, smart reply, message summarization, friend system, media sharing, and admin RBAC dashboard.
 
 <details>
 <summary><b>🛠️ Technical Highlights & Stack</b></summary>
@@ -219,54 +228,32 @@ public record Profile(
 <th width="70%">Implementation Details</th>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java" /></td>
-<td>Backend development using Java.</td>
+<td align="center"><img src="https://img.shields.io/badge/Spring_Boot_3.4-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" /></td>
+<td>Spring Boot 3.4.2 (Java 21) — REST API + WebSocket STOMP server</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot" /></td>
-<td>Robust backend application using Spring Boot.</td>
+<td align="center"><img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white" /></td>
+<td>Primary DB via Railway MySQL addon; Flyway migrations; UUID v7 PKs</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Microservices-E34F26?style=flat-square&logo=spring&logoColor=white" alt="Microservices" /></td>
-<td>Scalable distributed microservices architecture.</td>
-</tr>
-</table>
-
-</details>
-
-<p>
-  <a href="https://github.com/ThaiVietPhat/pbank-microservice">
-    <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
-  </a>
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
-  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
-  <img src="https://img.shields.io/badge/Microservices-E34F26?style=for-the-badge&logo=spring" />
-</p>
-
----
-
-### 💡 Zalo Fullstack App
-
-> **Status:** Active | **Stars:** ⭐ 1
->
-> Full-stack chat platform with real-time messaging, AI assistant, session management, and admin RBAC | Spring Boot + React
-
-<details>
-<summary><b>🛠️ Technical Highlights & Stack</b></summary>
-<br>
-
-<table>
-<tr>
-<th width="30%">Technology</th>
-<th width="70%">Implementation Details</th>
+<td align="center"><img src="https://img.shields.io/badge/WebSocket_STOMP-010101?style=flat-square&logo=socket.io&logoColor=white" /></td>
+<td>STOMP over SockJS — real-time message delivery, typing indicators, online status, WebRTC call signaling</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java" /></td>
-<td>Backend development using Java.</td>
+<td align="center"><img src="https://img.shields.io/badge/JWT_+_tokenVersion-000000?style=flat-square&logo=json-web-tokens&logoColor=white" /></td>
+<td>JWT with embedded <code>tokenVersion</code> — server-side invalidation + refresh token rotation (force-logout on reuse)</td>
 </tr>
 <tr>
-<td align="center"><img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot" /></td>
-<td>Robust backend application using Spring Boot.</td>
+<td align="center"><img src="https://img.shields.io/badge/Spring_AI_+_Groq-6DB33F?style=flat-square&logo=spring&logoColor=white" /></td>
+<td>AI chatbot, smart reply suggestions, and message summarization via Spring AI + Groq (LLaMA 3.1)</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Cloudflare_R2-F38020?style=flat-square&logo=cloudflare&logoColor=white" /></td>
+<td>S3-compatible media storage with HTTP Range support (206 Partial Content) for video/audio streaming</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/React_19_+_Vite-61DAFB?style=flat-square&logo=react&logoColor=black" /></td>
+<td>Frontend — React 19, Vite, Zustand, Tailwind CSS, @stomp/stompjs</td>
 </tr>
 </table>
 
@@ -276,14 +263,13 @@ public record Profile(
   <a href="https://github.com/ThaiVietPhat/zalo-fullstack-app">
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk" />
+  <a href="https://zalo-fullstack-app.vercel.app">
+    <img src="https://img.shields.io/badge/Live_Demo-Visit_Site-3fb950?style=for-the-badge&logo=vercel&logoColor=white" />
+  </a>
+  <img src="https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk" />
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
+  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
 </p>
-
----
-
-
-<!-- END_FEATURED_PROJECTS -->
 
 ---
 
@@ -342,11 +328,15 @@ public record Profile(
 
 <div align="center">
 
+**FPT Software** — Java Backend Intern *(June 2026 – Present)*
+
+<br>
+
 **Industrial University of Ho Chi Minh City (IUH)**
 <br>
 *Bachelor of Science in Computer Science* (2022 – Present)
 <br>
-Focusing on software engineering principles, algorithm optimization, and modern distributed systems architecture.
+Specializing in software engineering, distributed systems, and algorithm design.
 
 </div>
 
@@ -371,7 +361,7 @@ Focusing on software engineering principles, algorithm optimization, and modern 
 </p>
 
 <p align="center">
-  <sub><i>Currently seeking opportunities for Java Backend Intern / Fresher roles in Ho Chi Minh City.</i></sub>
+  <sub><i>Java Backend Developer — currently interning at FPT Software · open to full-time roles in Ho Chi Minh City.</i></sub>
 </p>
 
 <p align="center">
