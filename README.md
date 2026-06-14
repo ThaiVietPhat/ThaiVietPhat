@@ -214,7 +214,7 @@ public record Profile(
 
 ### 💡 Zalo Clone — Full-Stack Real-Time Chat
 
-> **Status:** Complete — Deployed · [🌐 Live Demo](https://zalo-fullstack-app.vercel.app)
+> **Status:** Complete
 >
 > Full-stack chat platform with real-time 1-1 & group messaging, WebRTC voice/video calls, AI assistant, smart reply, message summarization, friend system, media sharing, and admin RBAC dashboard.
 
@@ -262,9 +262,6 @@ public record Profile(
 <p>
   <a href="https://github.com/ThaiVietPhat/zalo-fullstack-app">
     <img src="https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
-  </a>
-  <a href="https://zalo-fullstack-app.vercel.app">
-    <img src="https://img.shields.io/badge/Live_Demo-Visit_Site-3fb950?style=for-the-badge&logo=vercel&logoColor=white" />
   </a>
   <img src="https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk" />
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
