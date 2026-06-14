@@ -1,205 +1,197 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200">
   <defs>
-    <!-- Backgrounds -->
-    <linearGradient id="pageBg" x1="0" y1="0" x2="900" y2="200" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#080c10"/>
-      <stop offset="1" stop-color="#0d1117"/>
-    </linearGradient>
-    <linearGradient id="termBg" x1="0" y1="0" x2="0" y2="156" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#13181f"/>
-      <stop offset="1" stop-color="#0d1117"/>
-    </linearGradient>
-    <linearGradient id="titleBar" x1="0" y1="0" x2="840" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1c2128"/>
-      <stop offset="1" stop-color="#161b22"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0"   stop-color="#080c10"/>
+      <stop offset="0.5" stop-color="#0d1117"/>
+      <stop offset="1"   stop-color="#111827"/>
     </linearGradient>
 
-    <!-- Glows & accents -->
-    <linearGradient id="borderGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#58a6ff" stop-opacity="0.7"/>
-      <stop offset="0.4" stop-color="#a371f7" stop-opacity="0.5"/>
-      <stop offset="1" stop-color="#58a6ff" stop-opacity="0.2"/>
+    <!-- Name gradient: blue → purple → blue -->
+    <linearGradient id="nameGrad" x1="0" y1="0" x2="560" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0"    stop-color="#79c0ff"/>
+      <stop offset="0.42" stop-color="#d2a8ff"/>
+      <stop offset="1"    stop-color="#79c0ff"/>
     </linearGradient>
-    <linearGradient id="nameGrad" x1="0" y1="0" x2="320" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#79c0ff"/>
-      <stop offset="0.45" stop-color="#d2a8ff"/>
-      <stop offset="1" stop-color="#79c0ff"/>
+
+    <!-- Accent bar gradient vertical -->
+    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#58a6ff"/>
+      <stop offset="0.5" stop-color="#a371f7"/>
+      <stop offset="1"   stop-color="#58a6ff" stop-opacity="0.2"/>
     </linearGradient>
-    <linearGradient id="bottomAccent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#58a6ff" stop-opacity="0"/>
-      <stop offset="0.25" stop-color="#58a6ff" stop-opacity="0.7"/>
-      <stop offset="0.5" stop-color="#a371f7" stop-opacity="0.9"/>
-      <stop offset="0.75" stop-color="#58a6ff" stop-opacity="0.7"/>
-      <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
+
+    <!-- Bottom line -->
+    <linearGradient id="bottomLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="0.2"  stop-color="#58a6ff" stop-opacity="0.8"/>
+      <stop offset="0.5"  stop-color="#a371f7" stop-opacity="1"/>
+      <stop offset="0.8"  stop-color="#58a6ff" stop-opacity="0.8"/>
+      <stop offset="1"    stop-color="#58a6ff" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="scanline" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#58a6ff" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#58a6ff" stop-opacity="0.04"/>
-      <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
+
+    <!-- Divider line -->
+    <linearGradient id="divLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#30363d" stop-opacity="0"/>
+      <stop offset="0.3" stop-color="#30363d" stop-opacity="1"/>
+      <stop offset="0.7" stop-color="#30363d" stop-opacity="1"/>
+      <stop offset="1"   stop-color="#30363d" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="orbLeft" x1="0" y1="0" x2="1" y2="1">
+
+    <!-- Orb left -->
+    <radialGradient id="orbL" cx="50%" cy="50%" r="50%">
       <stop offset="0" stop-color="#58a6ff" stop-opacity="0.18"/>
       <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="orbRight" x1="1" y1="0" x2="0" y2="1">
+    </radialGradient>
+
+    <!-- Orb right -->
+    <radialGradient id="orbR" cx="50%" cy="50%" r="50%">
       <stop offset="0" stop-color="#a371f7" stop-opacity="0.14"/>
       <stop offset="1" stop-color="#a371f7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Tag pill gradient -->
+    <linearGradient id="pill1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#58a6ff" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0.05"/>
     </linearGradient>
-
-    <!-- Filters -->
-    <filter id="blurLg" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="55"/>
-    </filter>
-    <filter id="blurMd" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="30"/>
-    </filter>
-    <filter id="termShadow" x="-5%" y="-10%" width="110%" height="130%">
-      <feDropShadow dx="0" dy="6" stdDeviation="18" flood-color="#000" flood-opacity="0.6"/>
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#58a6ff" flood-opacity="0.04"/>
-    </filter>
-    <filter id="textGlow" x="-20%" y="-50%" width="140%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <filter id="promptGlow" x="-10%" y="-50%" width="120%" height="200%">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <!-- Clip -->
-    <clipPath id="termClip">
-      <rect x="31" y="55" width="838" height="122" rx="0"/>
-    </clipPath>
+    <linearGradient id="pill2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a371f7" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#a371f7" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="pill3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3fb950" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#3fb950" stop-opacity="0.05"/>
+    </linearGradient>
   </defs>
 
-  <!-- Page background -->
-  <rect width="900" height="200" fill="url(#pageBg)"/>
+  <!-- Base -->
+  <rect width="900" height="200" fill="url(#bg)"/>
 
   <!-- Dot grid -->
-  <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-    <circle cx="10" cy="10" r="0.65" fill="#21262d" opacity="0.5"/>
+  <pattern id="dots" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+    <circle cx="11" cy="11" r="0.7" fill="#21262d" opacity="0.55"/>
   </pattern>
   <rect width="900" height="200" fill="url(#dots)"/>
 
   <!-- Ambient orbs -->
-  <circle cx="820" cy="30" r="130" fill="url(#orbLeft)" filter="url(#blurLg)"/>
-  <circle cx="700" cy="185" r="90" fill="url(#orbRight)" filter="url(#blurMd)"/>
-  <circle cx="60" cy="170" r="55" fill="#3fb950" opacity="0.025" filter="url(#blurMd)"/>
+  <ellipse cx="780" cy="50"  rx="200" ry="120" fill="url(#orbL)" opacity="0.9"/>
+  <ellipse cx="650" cy="170" rx="160" ry="90"  fill="url(#orbR)" opacity="0.9"/>
+  <ellipse cx="60"  cy="160" rx="90"  ry="60"  fill="#3fb950" opacity="0.025"/>
 
-  <!-- Terminal card -->
-  <g filter="url(#termShadow)">
-    <!-- Main body -->
-    <rect x="30" y="22" width="840" height="156" rx="10" fill="url(#termBg)" stroke="url(#borderGrad)" stroke-width="1.2"/>
+  <!-- Left accent bar -->
+  <rect x="38" y="32" width="4" height="136" rx="2" fill="url(#barGrad)"/>
 
-    <!-- Title bar -->
-    <rect x="30" y="22" width="840" height="33" rx="10" fill="url(#titleBar)"/>
-    <rect x="30" y="43" width="840" height="12" fill="url(#titleBar)"/>
-    <rect x="30" y="54" width="840" height="1" fill="#21262d" opacity="0.8"/>
+  <!-- == LEFT BLOCK == -->
 
-    <!-- Traffic lights -->
-    <circle cx="55" cy="38.5" r="6" fill="#ff5f57"/>
-    <circle cx="55" cy="38.5" r="3.5" fill="#ff5f57" opacity="0.3"/>
-    <circle cx="75" cy="38.5" r="6" fill="#febc2e"/>
-    <circle cx="75" cy="38.5" r="3.5" fill="#febc2e" opacity="0.3"/>
-    <circle cx="95" cy="38.5" r="6" fill="#28c840"/>
-    <circle cx="95" cy="38.5" r="3.5" fill="#28c840" opacity="0.3"/>
+  <!-- Code bracket top -->
+  <text x="54" y="52"
+    font-family="'SF Mono','JetBrains Mono','Fira Code',monospace"
+    font-size="11" fill="#58a6ff" opacity="0.45" letter-spacing="1.5">&lt;dev&gt;</text>
 
-    <!-- Window title -->
-    <text x="450" y="43" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="11.5" fill="#484f58" text-anchor="middle" letter-spacing="0.3">ThaiVietPhat — zsh — 148×40</text>
+  <!-- NAME — biggest element -->
+  <text x="54" y="108"
+    font-family="'Segoe UI',system-ui,-apple-system,'Helvetica Neue',sans-serif"
+    font-size="52" font-weight="900" fill="url(#nameGrad)"
+    letter-spacing="-0.5">Thai Viet Phat</text>
 
-    <!-- Separator dots right side -->
-    <circle cx="820" cy="38.5" r="2" fill="#30363d"/>
-    <circle cx="833" cy="38.5" r="2" fill="#30363d"/>
-    <circle cx="846" cy="38.5" r="2" fill="#30363d"/>
-  </g>
+  <!-- Role row -->
+  <text x="56" y="132"
+    font-family="'Segoe UI',system-ui,-apple-system,sans-serif"
+    font-size="13.5" fill="#8b949e" letter-spacing="2.8" font-weight="500">JAVA BACKEND DEVELOPER</text>
 
-  <!-- Terminal lines -->
+  <!-- Code bracket bottom -->
+  <text x="54" y="160"
+    font-family="'SF Mono','JetBrains Mono','Fira Code',monospace"
+    font-size="11" fill="#58a6ff" opacity="0.45" letter-spacing="1.5">&lt;/dev&gt;</text>
 
-  <!-- Line 1: whoami -->
-  <text x="52" y="80" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="12.5" filter="url(#promptGlow)">
-    <tspan fill="#3fb950">❯</tspan>
-    <tspan fill="#c9d1d9"> whoami</tspan>
+  <!-- Vertical divider -->
+  <rect x="510" y="28" width="1" height="144" fill="url(#divLine)"/>
+
+  <!-- == RIGHT BLOCK == -->
+
+  <!-- Status pill -->
+  <rect x="530" y="30" width="148" height="24" rx="12"
+    fill="url(#pill3)" stroke="#3fb950" stroke-width="0.8" stroke-opacity="0.4"/>
+  <circle cx="546" cy="42" r="4" fill="#3fb950"/>
+  <text x="556" y="46.5"
+    font-family="'Segoe UI',system-ui,sans-serif"
+    font-size="11.5" fill="#3fb950" font-weight="600" letter-spacing="0.3">Intern @ FPT Software</text>
+
+  <!-- Education line -->
+  <text x="530" y="82"
+    font-family="'Segoe UI',system-ui,sans-serif"
+    font-size="12" fill="#484f58">🎓</text>
+  <text x="552" y="82"
+    font-family="'Segoe UI',system-ui,sans-serif"
+    font-size="12" fill="#8b949e">
+    <tspan fill="#c9d1d9">IUH</tspan>
+    <tspan fill="#484f58"> · Computer Science · </tspan>
+    <tspan fill="#58a6ff">2022 – 2026</tspan>
   </text>
 
-  <!-- Line 2: whoami output — name prominent -->
-  <text x="52" y="98" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="12.5">
-    <tspan fill="#484f58">  </tspan>
-    <tspan fill="url(#nameGrad)" font-weight="700" font-size="14.5" filter="url(#textGlow)">Thai Viet Phat</tspan>
-    <tspan fill="#30363d" font-size="12.5">  │  </tspan>
-    <tspan fill="#8b949e" font-size="12.5">Java Backend Developer</tspan>
-    <tspan fill="#30363d" font-size="12.5">  │  </tspan>
-    <tspan fill="#3fb950" font-size="12.5">Intern @ FPT Software</tspan>
+  <!-- Location line -->
+  <text x="530" y="102"
+    font-family="'Segoe UI',system-ui,sans-serif"
+    font-size="12" fill="#484f58">📍</text>
+  <text x="552" y="102"
+    font-family="'Segoe UI',system-ui,sans-serif"
+    font-size="12">
+    <tspan fill="#c9d1d9">Ho Chi Minh City</tspan>
+    <tspan fill="#484f58">, Vietnam</tspan>
   </text>
 
-  <!-- Line 3: cat stack -->
-  <text x="52" y="117" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="12.5" filter="url(#promptGlow)">
-    <tspan fill="#3fb950">❯</tspan>
-    <tspan fill="#c9d1d9"> cat </tspan>
-    <tspan fill="#79c0ff">stack</tspan>
-    <tspan fill="#c9d1d9">.txt</tspan>
-  </text>
+  <!-- Thin separator -->
+  <rect x="530" y="114" width="340" height="1" fill="#21262d" opacity="0.8"/>
 
-  <!-- Line 4: stack output with colored tokens -->
-  <text x="52" y="135" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="12">
-    <tspan fill="#484f58">  </tspan>
-    <tspan fill="#79c0ff">Spring Boot</tspan>
-    <tspan fill="#30363d">  ·  </tspan>
-    <tspan fill="#d2a8ff">Spring Modulith</tspan>
-    <tspan fill="#30363d">  ·  </tspan>
-    <tspan fill="#79c0ff">Spring AI</tspan>
-    <tspan fill="#30363d">  ·  </tspan>
-    <tspan fill="#d2a8ff">pgvector</tspan>
-    <tspan fill="#30363d">  ·  </tspan>
-    <tspan fill="#79c0ff">Elasticsearch</tspan>
-    <tspan fill="#30363d">  ·  </tspan>
-    <tspan fill="#d2a8ff">Redis</tspan>
-    <tspan fill="#30363d">  ·  </tspan>
-    <tspan fill="#79c0ff">WebSocket</tspan>
-  </text>
+  <!-- Stack tags row 1 -->
+  <!-- Spring Boot -->
+  <rect x="530" y="122" width="93" height="20" rx="10"
+    fill="url(#pill1)" stroke="#58a6ff" stroke-width="0.7" stroke-opacity="0.3"/>
+  <text x="576.5" y="136"
+    font-family="'SF Mono','JetBrains Mono',monospace"
+    font-size="10.5" fill="#79c0ff" text-anchor="middle" font-weight="500">Spring Boot</text>
 
-  <!-- Line 5: git log -->
-  <text x="52" y="154" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="12.5" filter="url(#promptGlow)">
-    <tspan fill="#3fb950">❯</tspan>
-    <tspan fill="#c9d1d9"> git log </tspan>
-    <tspan fill="#f0883e">--oneline</tspan>
-    <tspan fill="#c9d1d9"> --all</tspan>
-  </text>
+  <!-- Spring AI -->
+  <rect x="630" y="122" width="78" height="20" rx="10"
+    fill="url(#pill2)" stroke="#a371f7" stroke-width="0.7" stroke-opacity="0.3"/>
+  <text x="669" y="136"
+    font-family="'SF Mono','JetBrains Mono',monospace"
+    font-size="10.5" fill="#d2a8ff" text-anchor="middle" font-weight="500">Spring AI</text>
 
-  <!-- Line 6: git log output -->
-  <text x="52" y="172" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="11.5">
-    <tspan fill="#484f58">  </tspan>
-    <tspan fill="#f0883e">a3f91c2</tspan>
-    <tspan fill="#8b949e"> feat(shopee-clone): checkout · payment · semantic search · Thesis 2026</tspan>
-  </text>
+  <!-- PostgreSQL -->
+  <rect x="715" y="122" width="90" height="20" rx="10"
+    fill="url(#pill1)" stroke="#58a6ff" stroke-width="0.7" stroke-opacity="0.3"/>
+  <text x="760" y="136"
+    font-family="'SF Mono','JetBrains Mono',monospace"
+    font-size="10.5" fill="#79c0ff" text-anchor="middle" font-weight="500">PostgreSQL</text>
 
-  <!-- Line 7: git log second entry + cursor -->
-  <text x="52" y="187" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="11.5">
-    <tspan fill="#484f58">  </tspan>
-    <tspan fill="#f0883e">b7d02e1</tspan>
-    <tspan fill="#8b949e"> feat(zalo-clone): realtime · WebRTC · Spring AI · full-stack deployed</tspan>
-  </text>
+  <!-- Stack tags row 2 -->
+  <!-- Elasticsearch -->
+  <rect x="530" y="148" width="100" height="20" rx="10"
+    fill="url(#pill2)" stroke="#a371f7" stroke-width="0.7" stroke-opacity="0.3"/>
+  <text x="580" y="162"
+    font-family="'SF Mono','JetBrains Mono',monospace"
+    font-size="10.5" fill="#d2a8ff" text-anchor="middle" font-weight="500">Elasticsearch</text>
 
-  <!-- Blinking cursor on empty next prompt -->
-  <text x="52" y="172" font-family="'SF Mono','JetBrains Mono','Fira Code',monospace" font-size="12.5" opacity="0">
-    <tspan fill="#3fb950">❯ </tspan>
-  </text>
+  <!-- WebSocket -->
+  <rect x="637" y="148" width="82" height="20" rx="10"
+    fill="url(#pill1)" stroke="#58a6ff" stroke-width="0.7" stroke-opacity="0.3"/>
+  <text x="678" y="162"
+    font-family="'SF Mono','JetBrains Mono',monospace"
+    font-size="10.5" fill="#79c0ff" text-anchor="middle" font-weight="500">WebSocket</text>
 
-  <!-- Scanline sweep animation -->
-  <rect x="31" y="55" width="838" height="40" fill="url(#scanline)" clip-path="url(#termClip)" opacity="0.6">
-    <animateTransform attributeName="transform" type="translate" from="0,-40" to="0,165" dur="4s" repeatCount="indefinite" calcMode="linear"/>
-  </rect>
+  <!-- pgvector -->
+  <rect x="726" y="148" width="74" height="20" rx="10"
+    fill="url(#pill2)" stroke="#a371f7" stroke-width="0.7" stroke-opacity="0.3"/>
+  <text x="763" y="162"
+    font-family="'SF Mono','JetBrains Mono',monospace"
+    font-size="10.5" fill="#d2a8ff" text-anchor="middle" font-weight="500">pgvector</text>
 
-  <!-- Cursor blink -->
-  <rect x="52" y="192" width="7.5" height="13" rx="1" fill="#58a6ff" opacity="0.9">
-    <animate attributeName="opacity" values="0.9;0;0.9" dur="1.05s" repeatCount="indefinite" keyTimes="0;0.5;1"/>
-  </rect>
+  <!-- Quote / tagline bottom right -->
+  <text x="530" y="186"
+    font-family="'SF Mono','JetBrains Mono','Fira Code',monospace"
+    font-size="11" fill="#484f58" letter-spacing="0.3">// turning ☕ into production-ready Java APIs</text>
 
   <!-- Bottom accent line -->
-  <rect x="0" y="197.5" width="900" height="2" fill="url(#bottomAccent)"/>
+  <rect x="0" y="197" width="900" height="2.5" fill="url(#bottomLine)"/>
 </svg>
