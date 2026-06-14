@@ -10,38 +10,58 @@ TOPIC_TECH_MAP = {
     "java": ("Java", "ED8B00", "openjdk", "Backend development using Java."),
     "spring-boot": ("Spring Boot", "6DB33F", "spring-boot", "Robust backend application using Spring Boot."),
     "spring-security": ("Spring Security", "6DB33F", "spring-security", "Secure authentication and authorization."),
+    "spring-modulith": ("Spring Modulith", "6DB33F", "spring", "Modular monolithic architecture."),
+    "spring-ai": ("Spring AI", "6DB33F", "spring", "AI integration for Java applications."),
+    "hibernate": ("Hibernate/JPA", "59666C", "hibernate", "Object-relational mapping."),
     "microservices": ("Microservices", "E34F26", "spring", "Scalable distributed microservices architecture."),
     "kafka": ("Apache Kafka", "231F20", "apache-kafka", "Event-driven architecture and real-time messaging."),
     "redis": ("Redis", "DC382D", "redis", "High-performance caching and distributed sessions."),
+    "elasticsearch": ("Elasticsearch", "005571", "elasticsearch", "Search and analytics engine."),
     "docker": ("Docker", "2496ED", "docker", "Containerized deployment and environment consistency."),
     "kubernetes": ("Kubernetes", "326CE5", "kubernetes", "Automated container deployment and scaling."),
-    "websocket": ("WebSocket", "010101", "socket.io", "Real-time bidirectional communication."),
+    "testcontainers": ("Testcontainers", "9B59B6", "docker", "Containerized integration testing."),
+    "websocket": ("WebSocket/STOMP", "010101", "socket.io", "Real-time bidirectional communication."),
     "jwt": ("JWT", "000000", "json-web-tokens", "Stateless authentication via JSON Web Tokens."),
     "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
     "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
+    "pgvector": ("pgvector", "316192", "postgresql", "Semantic search and vector database."),
     "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
+    "flyway": ("Flyway", "CC0200", "flyway", "Database schema migrations."),
+    "swagger": ("Swagger/OpenAPI", "85EA2D", "swagger", "API documentation and design."),
+    "react": ("React", "61DAFB", "react", "Frontend library for building user interfaces."),
 }
 
 POM_TECH_MAPPINGS = {
     "spring-boot": "spring-boot",
     "spring-cloud": "microservices",
+    "spring-modulith": "spring-modulith",
+    "spring-ai": "spring-ai",
     "spring-kafka": "kafka",
     "kafka-clients": "kafka",
     "spring-data-redis": "redis",
+    "spring-data-elasticsearch": "elasticsearch",
     "jedis": "redis",
     "jjwt": "jwt",
     "java-jwt": "jwt",
     "mysql-connector": "mysql",
     "postgresql": "postgresql",
+    "pgvector": "pgvector",
     "spring-data-mongodb": "mongodb",
+    "hibernate": "hibernate",
+    "spring-data-jpa": "hibernate",
+    "flyway": "flyway",
     "spring-security": "spring-security",
     "spring-boot-starter-websocket": "websocket",
+    "testcontainers": "testcontainers",
+    "springdoc": "swagger",
+    "swagger": "swagger",
 }
 
 PACKAGE_JSON_TECH_MAPPINGS = {
     "jsonwebtoken": "jwt",
     "socket.io": "websocket",
     "ws": "websocket",
+    "stompjs": "websocket",
     "redis": "redis",
     "ioredis": "redis",
     "kafkajs": "kafka",
@@ -50,11 +70,14 @@ PACKAGE_JSON_TECH_MAPPINGS = {
     "pg": "postgresql",
     "mongodb": "mongodb",
     "mongoose": "mongodb",
+    "react": "react",
 }
 
 GRADLE_TECH_MAPPINGS = {
     "spring-boot": "spring-boot",
     "spring-security": "spring-security",
+    "spring-modulith": "spring-modulith",
+    "spring-ai": "spring-ai",
 }
 
 CONFIG_TECH_MAPPINGS = {
@@ -63,6 +86,8 @@ CONFIG_TECH_MAPPINGS = {
     "mongodb": "mongodb",
     "redis": "redis",
     "kafka": "kafka",
+    "elasticsearch": "elasticsearch",
+    "flyway": "flyway",
 }
 
 class GitHubClient:
@@ -195,7 +220,7 @@ class TechAnalyzer:
         for key in TOPIC_TECH_MAP.keys():
             if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
                 add_tech(key)
-            elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
+            elif key not in added_techs and key in ['kafka', 'redis', 'elasticsearch', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'pgvector', 'mongodb', 'flyway', 'react'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
                 add_tech(key)
 
         # 6. Language fallback
