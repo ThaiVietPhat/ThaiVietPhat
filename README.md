@@ -5,7 +5,7 @@
 <h1 align="center">Hi there! 👋 I'm Thai Viet Phat</h1>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=22&duration=3200&pause=800&color=58A6FF&center=true&vCenter=true&width=600&height=50&lines=Java+Backend+Developer;Spring+Boot+%7C+Spring+Modulith+%7C+Kafka;Real-Time+Systems+%7C+WebSocket+%7C+STOMP;AI+Integration+%7C+Spring+AI+%7C+pgvector;Building+Production-Ready+APIs" alt="typing animation" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=22&duration=3200&pause=800&color=58A6FF&center=true&vCenter=true&width=600&height=50&lines=Java+Backend+Developer;Spring+Boot+%7C+Spring+Modulith+%7C+Spring+AI;Real-Time+Systems+%7C+WebSocket+%7C+STOMP;Semantic+Search+%7C+pgvector+%7C+Elasticsearch;Building+Production-Ready+APIs" alt="typing animation" />
 </p>
 
 <p align="center">
@@ -31,7 +31,7 @@
   <strong>Building production-minded Java backends — from real-time chat to e-commerce at scale.</strong>
 </p>
 
-I am a **Java Backend Developer** based in Ho Chi Minh City, Vietnam, currently interning at **FPT Software**. Final-year Computer Science student at IUH with hands-on experience building full-stack applications with real-time messaging, payment integration, semantic search, and AI features. I focus on writing defensible, testable, production-ready code.
+I am a **Java Backend Developer** based in Ho Chi Minh City, Vietnam, currently interning at **FPT Software**. Final-year Computer Science student at IUH (expected graduation 2026) with hands-on experience building full-stack applications with real-time messaging, payment integration, semantic search, and AI features. I focus on writing defensible, testable, production-ready code.
 
 <details>
 <summary><b>👨‍💻 View Developer Profile (Java)</b></summary>
@@ -48,11 +48,11 @@ public record Profile(
     public static final Profile ME = new Profile(
         "Thai Viet Phat",
         "Java Backend Developer — Intern @ FPT Software",
-        "Industrial University of Ho Chi Minh City — CS (2022 - Present)",
+        "Industrial University of Ho Chi Minh City — CS (2022 - 2026)",
         "Ho Chi Minh City, Vietnam",
         new String[] {
-            "RESTful APIs & Modular Monolith / Microservices Architecture",
-            "Real-Time Systems (WebSocket STOMP, Event-Driven with Spring Events)",
+            "RESTful APIs & Modular Monolith Architecture (Spring Modulith)",
+            "Real-Time Systems (WebSocket STOMP, event-driven side effects)",
             "Stateless Security (JWT rotation, refresh token family, OAuth2)",
             "AI Integration (Spring AI, pgvector semantic search, Groq/Gemini)",
             "Payment Integration (VNPay sandbox, idempotent webhook handling)",
@@ -85,9 +85,9 @@ public record Profile(
     <td width="50%" valign="top">
       <h3>🚀 What's Next</h3>
       <ul>
-        <li>Ship live demo for Shopee Clone and complete the frontend.</li>
+        <li>Complete Shopee Clone frontend and publish live demo.</li>
         <li>DSA practice via <b>NeetCode 150</b> (1–2 problems/day, Java).</li>
-        <li>Targeting Java Backend roles at fintech/product companies after internship.</li>
+        <li>Targeting full-time Java Backend roles at fintech/product companies in late 2026.</li>
       </ul>
     </td>
   </tr>
@@ -135,22 +135,26 @@ public record Profile(
 
 <h2 align="center">🏆 Technical Highlights</h2>
 
-- 🔄 Implemented **refresh token rotation with family tracking** — reuse detection forces logout across all sessions
-- 🔒 **JWT with `tokenVersion`** embedded in claims — server-side invalidation without a blocklist for 1-1 sessions
-- 💳 **VNPay sandbox integration** with signed webhook verification and idempotent duplicate-webhook handling
-- 🛡️ **Optimistic locking + explicit lock ordering** for inventory reservations — prevents double-spend and deadlocks at checkout
-- 🔍 **Elasticsearch keyword/facet search + pgvector semantic search** with graceful PostgreSQL fallback when ES is degraded
-- 🤖 **Spring AI integration** (Groq/LLaMA for Zalo; Google Gemini for Shopee) — AI chat, smart reply, message summarization, product recommendations
-- 📦 **Spring Modulith event publication registry** for reliable cross-module side effects (indexing, notification, email) without tight coupling
-- 📊 **Prometheus/Micrometer observability** with custom metrics for scheduler throughput, AI fallback rate, and search degradation
+**Zalo Clone**
+- 🔄 **Refresh token rotation with family tracking** — reuse detection invalidates the entire family and force-logouts all sessions
+- 🔒 **JWT with embedded `tokenVersion`** — server-side invalidation per-user without a token blocklist
+- 🤖 **Spring AI + Groq (LLaMA 3.1)** — AI chatbot, per-conversation smart reply suggestions, and date-range message summarization
+- 📡 **WebRTC call signaling via STOMP relay** — offer/answer/ICE candidate exchange with call history persistence
+
+**Shopee Clone** *(Graduation Thesis — IUH 2026)*
+- 💳 **VNPay sandbox integration** — signed webhook verification, idempotent duplicate-webhook handling, payment timeout scheduler
+- 🛡️ **Optimistic locking + explicit lock ordering** for inventory reservations — prevents double-spend and deadlock at checkout
+- 🔍 **Elasticsearch keyword/facet search + pgvector semantic search** — automatic graceful fallback to PostgreSQL LIKE when ES is degraded
+- 📦 **Spring Modulith event publication registry** — reliable cross-module side effects (indexing, notification, email) with zero tight coupling
+- 📊 **Prometheus/Micrometer observability** — custom counters for scheduler throughput, AI fallback rate, search degradation, and webhook duplicates
 
 ---
 
 <h2 align="center">🚀 Featured Projects</h2>
 
-### 💡 Shopee Clone — Modular Monolith (Graduation Thesis)
+<h3>💡 Shopee Clone — Modular Monolith <sub><sup><i>Graduation Thesis · IUH 2026</i></sup></sub></h3>
 
-> **Status:** Active — Backend complete, frontend in progress
+> **Status:** Active — Backend complete · Frontend in progress
 >
 > Production-minded Shopee-style e-commerce backend built with Spring Boot + Spring Modulith. Covers the full buyer/seller/admin flow: authentication, catalog, inventory, cart, checkout, payment, fulfillment, search, semantic recommendations, reviews, notifications, and real-time chat.
 
@@ -169,7 +173,7 @@ public record Profile(
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/Spring_Boot_4-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" /></td>
-<td>Spring Boot 4 + Spring Modulith for strict module boundary enforcement via Spring Events</td>
+<td>Spring Boot 4 + Spring Modulith — strict module boundary enforcement via Spring Events publication registry</td>
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white" /></td>
@@ -181,7 +185,7 @@ public record Profile(
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/Elasticsearch-005571?style=flat-square&logo=elasticsearch&logoColor=white" /></td>
-<td>Keyword/facet search with automatic PostgreSQL LIKE fallback</td>
+<td>Keyword/facet search with automatic PostgreSQL LIKE fallback when degraded</td>
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/pgvector-316192?style=flat-square&logo=postgresql&logoColor=white" /></td>
@@ -189,11 +193,11 @@ public record Profile(
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/VNPay-CC0200?style=flat-square&logoColor=white" /></td>
-<td>VNPay sandbox payment with signed webhook, idempotent replay handling, and payment timeout scheduler</td>
+<td>VNPay sandbox payment — signed webhook, idempotent replay handling, payment timeout scheduler</td>
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/Testcontainers-9B59B6?style=flat-square&logo=docker&logoColor=white" /></td>
-<td>Full integration test suite with Testcontainers (PostgreSQL, Redis, ES); JaCoCo 80% coverage gate</td>
+<td>Full integration test suite (PostgreSQL, Redis, ES); JaCoCo 80% bundle coverage gate</td>
 </tr>
 </table>
 
@@ -212,9 +216,9 @@ public record Profile(
 
 ---
 
-### 💡 Zalo Clone — Full-Stack Real-Time Chat
+<h3>💡 Zalo Clone — Full-Stack Real-Time Chat</h3>
 
-> **Status:** Complete
+> **Status:** Complete · Backend deployed on Railway · Frontend on Vercel
 >
 > Full-stack chat platform with real-time 1-1 & group messaging, WebRTC voice/video calls, AI assistant, smart reply, message summarization, friend system, media sharing, and admin RBAC dashboard.
 
@@ -241,7 +245,7 @@ public record Profile(
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/JWT_+_tokenVersion-000000?style=flat-square&logo=json-web-tokens&logoColor=white" /></td>
-<td>JWT with embedded <code>tokenVersion</code> — server-side invalidation + refresh token rotation (force-logout on reuse)</td>
+<td>JWT with embedded <code>tokenVersion</code> — server-side invalidation + refresh token family rotation</td>
 </tr>
 <tr>
 <td align="center"><img src="https://img.shields.io/badge/Spring_AI_+_Groq-6DB33F?style=flat-square&logo=spring&logoColor=white" /></td>
@@ -331,7 +335,7 @@ public record Profile(
 
 **Industrial University of Ho Chi Minh City (IUH)**
 <br>
-*Bachelor of Science in Computer Science* (2022 – Present)
+*Bachelor of Science in Computer Science* (2022 – 2026)
 <br>
 Specializing in software engineering, distributed systems, and algorithm design.
 
@@ -358,7 +362,7 @@ Specializing in software engineering, distributed systems, and algorithm design.
 </p>
 
 <p align="center">
-  <sub><i>Java Backend Developer — currently interning at FPT Software · open to full-time roles in Ho Chi Minh City.</i></sub>
+  <sub><i>Java Backend Developer · Interning at FPT Software · Available for full-time roles from late 2026 (Ho Chi Minh City)</i></sub>
 </p>
 
 <p align="center">
