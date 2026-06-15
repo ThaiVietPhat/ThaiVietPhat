@@ -69,14 +69,19 @@ class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
+        self.session = requests.Session()
         self.headers = {"Accept": "application/vnd.github.v3+json"}
         if self.token:
             self.headers["Authorization"] = f"token {self.token}"
+        self.session.headers.update(self.headers)
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
+                return None
+            if response.status_code == 403:
+                print(f"Rate limit or forbidden on {url}: {response.text}")
                 return None
             response.raise_for_status()
             return response
