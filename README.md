@@ -151,6 +151,7 @@ public record Profile(
 ---
 
 <h2 align="center">🚀 Featured Projects</h2>
+<!-- START_FEATURED_PROJECTS -->
 
 <h3>💡 Shopee Clone — Modular Monolith <sub><sup><i>Graduation Thesis · IUH 2026</i></sup></sub></h3>
 
@@ -272,6 +273,7 @@ public record Profile(
   <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
 </p>
 
+<!-- END_FEATURED_PROJECTS -->
 ---
 
 <h2 align="center">📊 GitHub Statistics</h2>
