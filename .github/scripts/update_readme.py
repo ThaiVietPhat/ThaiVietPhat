@@ -72,11 +72,16 @@ class GitHubClient:
         self.headers = {"Accept": "application/vnd.github.v3+json"}
         if self.token:
             self.headers["Authorization"] = f"token {self.token}"
+        self.session = requests.Session()
+        self.session.headers.update(self.headers)
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
+                return None
+            if response.status_code == 403:
+                print(f"Rate limit exceeded or access forbidden for {url}")
                 return None
             response.raise_for_status()
             return response
