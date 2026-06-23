@@ -152,6 +152,7 @@ public record Profile(
 
 <h2 align="center">🚀 Featured Projects</h2>
 
+<!-- START_FEATURED_PROJECTS -->
 <h3>💡 Shopee Clone — Modular Monolith <sub><sup><i>Graduation Thesis · IUH 2026</i></sup></sub></h3>
 
 > **Status:** Active — Backend complete · Frontend in progress
@@ -271,6 +272,7 @@ public record Profile(
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot" />
   <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
 </p>
+<!-- END_FEATURED_PROJECTS -->
 
 ---
 
