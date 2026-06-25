@@ -152,6 +152,8 @@ public record Profile(
 
 <h2 align="center">🚀 Featured Projects</h2>
 
+<!-- START_FEATURED_PROJECTS -->
+
 <h3>💡 Shopee Clone — Modular Monolith <sub><sup><i>Graduation Thesis · IUH 2026</i></sup></sub></h3>
 
 > **Status:** Active — Backend complete · Frontend in progress
@@ -273,6 +275,8 @@ public record Profile(
 </p>
 
 ---
+
+<!-- END_FEATURED_PROJECTS -->
 
 <h2 align="center">📊 GitHub Statistics</h2>
 
