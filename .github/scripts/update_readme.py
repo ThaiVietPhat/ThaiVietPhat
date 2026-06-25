@@ -4,107 +4,34 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
-
-# Mapping of topics to technical descriptions and badges
-TOPIC_TECH_MAP = {
-    "java": ("Java", "ED8B00", "openjdk", "Backend development using Java."),
-    "spring-boot": ("Spring Boot", "6DB33F", "spring-boot", "Robust backend application using Spring Boot."),
-    "spring-security": ("Spring Security", "6DB33F", "spring-security", "Secure authentication and authorization."),
-    "microservices": ("Microservices", "E34F26", "spring", "Scalable distributed microservices architecture."),
-    "kafka": ("Apache Kafka", "231F20", "apache-kafka", "Event-driven architecture and real-time messaging."),
-    "redis": ("Redis", "DC382D", "redis", "High-performance caching and distributed sessions."),
-    "docker": ("Docker", "2496ED", "docker", "Containerized deployment and environment consistency."),
-    "kubernetes": ("Kubernetes", "326CE5", "kubernetes", "Automated container deployment and scaling."),
-    "websocket": ("WebSocket", "010101", "socket.io", "Real-time bidirectional communication."),
-    "jwt": ("JWT", "000000", "json-web-tokens", "Stateless authentication via JSON Web Tokens."),
-    "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
-    "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
-    "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
-}
-
-POM_TECH_MAPPINGS = {
-    "spring-boot": "spring-boot",
-    "spring-cloud": "microservices",
-    "spring-kafka": "kafka",
-    "kafka-clients": "kafka",
-    "spring-data-redis": "redis",
-    "jedis": "redis",
-    "jjwt": "jwt",
-    "java-jwt": "jwt",
-    "mysql-connector": "mysql",
-    "postgresql": "postgresql",
-    "spring-data-mongodb": "mongodb",
-    "spring-security": "spring-security",
-    "spring-boot-starter-websocket": "websocket",
-}
-
-PACKAGE_JSON_TECH_MAPPINGS = {
-    "jsonwebtoken": "jwt",
-    "socket.io": "websocket",
-    "ws": "websocket",
-    "redis": "redis",
-    "ioredis": "redis",
-    "kafkajs": "kafka",
-    "mysql": "mysql",
-    "mysql2": "mysql",
-    "pg": "postgresql",
-    "mongodb": "mongodb",
-    "mongoose": "mongodb",
-}
-
-GRADLE_TECH_MAPPINGS = {
-    "spring-boot": "spring-boot",
-    "spring-security": "spring-security",
-}
-
-CONFIG_TECH_MAPPINGS = {
-    "mysql": "mysql",
-    "postgresql": "postgresql",
-    "mongodb": "mongodb",
-    "redis": "redis",
-    "kafka": "kafka",
-}
+from google import genai
+from google.genai import types
 
 class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
-    def get(self, url: str) -> Optional[requests.Response]:
+    def get(self, url: str, headers: Optional[Dict[str, str]] = None) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            req_headers = self.session.headers.copy()
+            if headers:
+                req_headers.update(headers)
+            response = self.session.get(url, headers=req_headers)
             if response.status_code == 404:
+                return None
+            if response.status_code == 403:
+                print(f"API rate limit exceeded or forbidden for url: {url}")
                 return None
             response.raise_for_status()
             return response
         except requests.exceptions.RequestException as e:
-            print(f"API request failed: {e}")
+            print(f"API request failed for {url}: {e}")
             return None
-
-    def get_repo_languages(self, repo_name: str) -> Dict[str, int]:
-        url = f"https://api.github.com/repos/{self.username}/{repo_name}/languages"
-        response = self.get(url)
-        return response.json() if response else {}
-
-    def get_file_content(self, repo_name: str, filepath: str) -> Optional[str]:
-        url = f"https://api.github.com/repos/{self.username}/{repo_name}/contents/{filepath}"
-        response = self.get(url)
-        if response:
-            data = response.json()
-            if isinstance(data, dict) and "content" in data:
-                try:
-                    return base64.b64decode(data["content"]).decode("utf-8")
-                except Exception:
-                    pass
-        return None
-
-    def check_path_exists(self, repo_name: str, filepath: str) -> bool:
-        url = f"https://api.github.com/repos/{self.username}/{repo_name}/contents/{filepath}"
-        response = self.get(url)
-        return response is not None
 
     def fetch_top_repositories(self) -> List[Dict[str, Any]]:
         print("Fetching top repositories...")
@@ -124,91 +51,122 @@ class GitHubClient:
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
 
+    def get_file_content_raw(self, repo_name: str, filepath: str) -> Optional[str]:
+        url = f"https://api.github.com/repos/{self.username}/{repo_name}/contents/{filepath}"
+        response = self.get(url, headers={"Accept": "application/vnd.github.v3.raw"})
+        if response:
+            return response.text
+        return None
+
+    def get_repo_languages(self, repo_name: str) -> Dict[str, int]:
+        url = f"https://api.github.com/repos/{self.username}/{repo_name}/languages"
+        response = self.get(url)
+        return response.json() if response else {}
+
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        api_key = os.environ.get("GEMINI_API_KEY")
+        self.gemini_client = genai.Client(api_key=api_key) if api_key else None
 
-    def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
+    def generate_with_gemini(self, repo: Dict[str, Any], prompt: str) -> str:
+        if not self.gemini_client:
+             return "No API key"
+
+        try:
+             response = self.gemini_client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                     temperature=0.2,
+                     max_output_tokens=1024
+                )
+             )
+             return response.text
+        except Exception as e:
+             print(f"Error generating with Gemini: {e}")
+             return ""
+
+    def analyze_repo(self, repo: Dict[str, Any]) -> str:
         repo_name = repo["name"]
         print(f"Analyzing {repo_name}...")
-        topics = repo.get("topics", [])
-        description = repo.get("description", "") or ""
 
-        tech_stack: List[Tuple[str, str, str, str]] = []
-        added_techs = set()
+        # Gather context
+        readme_content = self.github_client.get_file_content_raw(repo_name, "README.md") or ""
+        pom_content = self.github_client.get_file_content_raw(repo_name, "pom.xml") or ""
+        pkg_content = self.github_client.get_file_content_raw(repo_name, "package.json") or ""
 
-        def add_tech(key: str) -> None:
-            if key in TOPIC_TECH_MAP and key not in added_techs:
-                tech_stack.append(TOPIC_TECH_MAP[key])
-                added_techs.add(key)
-
-        # 1. Topics
-        for topic in topics:
-            add_tech(topic)
-
-        # 2. Languages API
         languages = self.github_client.get_repo_languages(repo_name)
-        for lang in languages:
-            add_tech(lang.lower())
 
-        # 3. Dependency files
-        pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
-        if pom_xml:
-            add_tech("java")
-            for keyword, tech in POM_TECH_MAPPINGS.items():
-                if keyword in pom_xml:
-                    add_tech(tech)
+        context_parts = []
+        if readme_content:
+             # truncate to avoid token limits, 3000 chars should be plenty for overview
+             context_parts.append(f"--- README.md ---\n{readme_content[:3000]}\n")
+        if pom_content:
+             context_parts.append(f"--- pom.xml ---\n{pom_content[:2000]}\n")
+        if pkg_content:
+             context_parts.append(f"--- package.json ---\n{pkg_content[:2000]}\n")
 
-        package_json = self.github_client.get_file_content(repo_name, "package.json")
-        if package_json:
-            for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
-                if keyword in package_json:
-                    add_tech(tech)
+        context_parts.append(f"--- Top Languages ---\n{json.dumps(languages)}\n")
 
-        build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
-        if build_gradle:
-            add_tech("java")
-            for keyword, tech in GRADLE_TECH_MAPPINGS.items():
-                if keyword in build_gradle:
-                    add_tech(tech)
+        full_context = "\n".join(context_parts)
 
-        dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
-        if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
-            add_tech("docker")
+        prompt = f"""
+You are an expert developer summarizing a project for a GitHub Profile README.
+I will provide you with files from a repository named "{repo_name}" (description: {repo.get('description', '')}).
+Based on the provided context, extract the most prominent and special technical highlights and tech stack used.
+You must output a highly detailed, professional, and elegant Markdown string representing the `<table>` and shield.io badges exactly like the example below. Do NOT include markdown code block formatting (like ```html), just output the raw HTML/Markdown string.
 
-        if self.github_client.check_path_exists(repo_name, "k8s") or self.github_client.check_path_exists(repo_name, "kubernetes"):
-            add_tech("kubernetes")
+Here is an example format to follow EXACTLY for the table structure and shields:
 
-        # 4. Configuration files
-        config_files = [
-            "application.yml", "application.yaml", "application.properties",
-            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
-        ]
-        for config_file in config_files:
-            content = self.github_client.get_file_content(repo_name, config_file)
-            if content:
-                for keyword, tech in CONFIG_TECH_MAPPINGS.items():
-                    if keyword in content.lower():
-                        add_tech(tech)
+<table>
+<tr>
+<th width="30%">Technology</th>
+<th width="70%">Implementation Details</th>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Java_21-ED8B00?style=flat-square&logo=openjdk&logoColor=white" /></td>
+<td>Java 21 with sealed interfaces, records, pattern matching</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/Spring_Boot_4-6DB33F?style=flat-square&logo=spring-boot&logoColor=white" /></td>
+<td>Spring Boot 4 + Spring Modulith — strict module boundary enforcement via Spring Events publication registry</td>
+</tr>
+<tr>
+<td align="center"><img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white" /></td>
+<td>Primary DB with Flyway migrations; Hibernate in validate mode</td>
+</tr>
+</table>
 
-        # 5. Fallback scanning
-        for key in TOPIC_TECH_MAP.keys():
-            if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
-                add_tech(key)
-            elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
-                add_tech(key)
+Instructions:
+1. Identify 4-8 key technologies used in the project.
+2. For each, generate a shield.io badge in the `<td align="center">...</td>`. Include the correct brand color and simple logos if possible (e.g. spring-boot, react, mysql, postgresql, redis, elasticsearch). Look at the example to see the shield structure. Use logoColor=white or logoColor=black as appropriate.
+3. In the second `<td>`, provide 1 or 2 lines of very specific technical details based on the project context. Do not use generic statements like "Used for backend". Mention specific things like "Refresh token rotation with family tracking", or "WebRTC call signaling via STOMP relay" if found in the README context.
+4. Output ONLY the `<table>...</table>` block.
 
-        # 6. Language fallback
-        if not tech_stack and repo.get("language"):
-            add_tech(repo["language"].lower())
+Context files:
+{full_context}
+"""
 
-        return tech_stack
+        generated_table = self.generate_with_gemini(repo, prompt)
+
+        # cleanup
+        generated_table = generated_table.strip()
+        if generated_table.startswith("```html"):
+             generated_table = generated_table[7:]
+        if generated_table.startswith("```"):
+             generated_table = generated_table[3:]
+        if generated_table.endswith("```"):
+             generated_table = generated_table[:-3]
+
+        return generated_table.strip()
+
 
 class MarkdownGenerator:
     def generate(self, repos: List[Dict[str, Any]], analyzer: TechAnalyzer) -> str:
         md_content = ""
         for repo in repos:
-            tech_stack = analyzer.analyze_repo(repo)
+            table_content = analyzer.analyze_repo(repo)
             name = repo["name"].replace("-", " ").title()
             description = repo.get("description") or "No description provided."
             url = repo["html_url"]
@@ -219,39 +177,17 @@ class MarkdownGenerator:
             md_content += f"> **Status:** Active | **Stars:** ⭐ {stars}\n>\n"
             md_content += f"> {description}\n\n"
 
-            if tech_stack:
-                # Use Details/Summary for a cleaner look
+            if table_content and table_content.startswith("<table"):
                 md_content += "<details>\n"
                 md_content += "<summary><b>🛠️ Technical Highlights & Stack</b></summary>\n<br>\n\n"
-
-                md_content += "<table>\n"
-                md_content += "<tr>\n"
-                md_content += "<th width=\"30%\">Technology</th>\n"
-                md_content += "<th width=\"70%\">Implementation Details</th>\n"
-                md_content += "</tr>\n"
-
-                for tech_name, color, logo, tech_desc in tech_stack:
-                    encoded_name = tech_name.replace(" ", "_").replace("-", "_")
-                    badge = f"<img src=\"https://img.shields.io/badge/{encoded_name}-{color}?style=flat-square&logo={logo}&logoColor=white\" alt=\"{tech_name}\" />"
-                    md_content += "<tr>\n"
-                    md_content += f"<td align=\"center\">{badge}</td>\n"
-                    md_content += f"<td>{tech_desc}</td>\n"
-                    md_content += "</tr>\n"
-
-                md_content += "</table>\n\n"
+                md_content += table_content + "\n\n"
                 md_content += "</details>\n\n"
 
-            # Footer with Quick Links and Top Badges
+            # Footer with Quick Links
             md_content += "<p>\n"
             md_content += f"  <a href=\"{url}\">\n"
             md_content += f"    <img src=\"https://img.shields.io/badge/Source_Code-View_on_GitHub-181717?style=for-the-badge&logo=github&logoColor=white\" />\n"
             md_content += "  </a>\n"
-
-            if tech_stack:
-                 for tech_name, color, logo, _ in tech_stack[:3]: # Limit to top 3 badges
-                      encoded_name = tech_name.replace(" ", "_")
-                      md_content += f"  <img src=\"https://img.shields.io/badge/{encoded_name}-{color}?style=for-the-badge&logo={logo}\" />\n"
-
             md_content += "</p>\n\n"
             md_content += "---\n\n"
 
@@ -275,7 +211,7 @@ class ReadmeUpdater:
             if start_idx != -1 and end_idx != -1:
                 new_readme = (
                     readme_data[:start_idx + len(start_marker)] + "\n\n" +
-                    md_content + "\n" +
+                    md_content +
                     readme_data[end_idx:]
                 )
 
