@@ -4,6 +4,8 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+from google import genai
+from google.genai import types
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -69,13 +71,14 @@ class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -127,10 +130,83 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        api_key = os.environ.get("GEMINI_API_KEY")
+        self.gemini_client = genai.Client(api_key=api_key) if api_key else None
+
+    def analyze_with_gemini(self, repo: Dict[str, Any]) -> Optional[List[Tuple[str, str, str, str]]]:
+        if not self.gemini_client:
+            return None
+
+        repo_name = repo["name"]
+        print(f"Analyzing {repo_name} with Gemini...")
+
+        # Gather context
+        description = repo.get("description", "")
+        topics = repo.get("topics", [])
+
+        # Fetch some key files to provide as context
+        readme = self.github_client.get_file_content(repo_name, "README.md") or ""
+        pom = self.github_client.get_file_content(repo_name, "pom.xml") or ""
+        pkg = self.github_client.get_file_content(repo_name, "package.json") or ""
+
+        context = f"""
+        Repository: {repo_name}
+        Description: {description}
+        Topics: {', '.join(topics)}
+
+        README excerpt:
+        {readme[:1000]}
+
+        Dependencies excerpt:
+        {pom[:1000] if pom else pkg[:1000]}
+        """
+
+        prompt = f"""
+        Analyze the following GitHub repository context and identify the key technologies used.
+        Return a JSON array where each object has the following keys:
+        - "tech_name": The name of the technology (e.g., "Java", "Spring Boot", "MySQL").
+        - "color": A hex color code without the '#' for a badge (e.g., "ED8B00").
+        - "logo": The simpleicons logo name for the technology (e.g., "openjdk", "spring-boot").
+        - "tech_desc": A specific, one-sentence description of how this technology is likely used in this project based on the context.
+
+        Do not return markdown, only the raw JSON array.
+
+        Context:
+        {context}
+        """
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                ),
+            )
+            data = json.loads(response.text)
+
+            tech_stack = []
+            for item in data:
+                tech_stack.append((
+                    item.get("tech_name", "Unknown"),
+                    item.get("color", "000000"),
+                    item.get("logo", ""),
+                    item.get("tech_desc", "Used in the project.")
+                ))
+            return tech_stack
+        except Exception as e:
+            print(f"Gemini API failed: {e}")
+            return None
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
         print(f"Analyzing {repo_name}...")
+
+        gemini_stack = self.analyze_with_gemini(repo)
+        if gemini_stack:
+            return gemini_stack
+
+        # Fallback to static analysis
         topics = repo.get("topics", [])
         description = repo.get("description", "") or ""
 
