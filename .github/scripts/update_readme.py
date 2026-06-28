@@ -4,84 +4,30 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
-
-# Mapping of topics to technical descriptions and badges
-TOPIC_TECH_MAP = {
-    "java": ("Java", "ED8B00", "openjdk", "Backend development using Java."),
-    "spring-boot": ("Spring Boot", "6DB33F", "spring-boot", "Robust backend application using Spring Boot."),
-    "spring-security": ("Spring Security", "6DB33F", "spring-security", "Secure authentication and authorization."),
-    "microservices": ("Microservices", "E34F26", "spring", "Scalable distributed microservices architecture."),
-    "kafka": ("Apache Kafka", "231F20", "apache-kafka", "Event-driven architecture and real-time messaging."),
-    "redis": ("Redis", "DC382D", "redis", "High-performance caching and distributed sessions."),
-    "docker": ("Docker", "2496ED", "docker", "Containerized deployment and environment consistency."),
-    "kubernetes": ("Kubernetes", "326CE5", "kubernetes", "Automated container deployment and scaling."),
-    "websocket": ("WebSocket", "010101", "socket.io", "Real-time bidirectional communication."),
-    "jwt": ("JWT", "000000", "json-web-tokens", "Stateless authentication via JSON Web Tokens."),
-    "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
-    "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
-    "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
-}
-
-POM_TECH_MAPPINGS = {
-    "spring-boot": "spring-boot",
-    "spring-cloud": "microservices",
-    "spring-kafka": "kafka",
-    "kafka-clients": "kafka",
-    "spring-data-redis": "redis",
-    "jedis": "redis",
-    "jjwt": "jwt",
-    "java-jwt": "jwt",
-    "mysql-connector": "mysql",
-    "postgresql": "postgresql",
-    "spring-data-mongodb": "mongodb",
-    "spring-security": "spring-security",
-    "spring-boot-starter-websocket": "websocket",
-}
-
-PACKAGE_JSON_TECH_MAPPINGS = {
-    "jsonwebtoken": "jwt",
-    "socket.io": "websocket",
-    "ws": "websocket",
-    "redis": "redis",
-    "ioredis": "redis",
-    "kafkajs": "kafka",
-    "mysql": "mysql",
-    "mysql2": "mysql",
-    "pg": "postgresql",
-    "mongodb": "mongodb",
-    "mongoose": "mongodb",
-}
-
-GRADLE_TECH_MAPPINGS = {
-    "spring-boot": "spring-boot",
-    "spring-security": "spring-security",
-}
-
-CONFIG_TECH_MAPPINGS = {
-    "mysql": "mysql",
-    "postgresql": "postgresql",
-    "mongodb": "mongodb",
-    "redis": "redis",
-    "kafka": "kafka",
-}
+from google import genai
+from google.genai import types
 
 class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
+                return None
+            if response.status_code == 403:
+                print(f"API rate limit exceeded or access denied for {url}.")
                 return None
             response.raise_for_status()
             return response
         except requests.exceptions.RequestException as e:
-            print(f"API request failed: {e}")
+            print(f"API request failed for {url}: {e}")
             return None
 
     def get_repo_languages(self, repo_name: str) -> Dict[str, int]:
@@ -124,85 +70,92 @@ class GitHubClient:
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
 
+class GeminiClient:
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.client = genai.Client(api_key=self.api_key)
+
+    def analyze_tech_stack(self, repo_name: str, description: str, files_content: Dict[str, str]) -> List[Tuple[str, str, str, str]]:
+        # Truncate content dictionary safely instead of truncating the JSON string
+        truncated_files = {}
+        total_len = 0
+        for path, content in files_content.items():
+            if total_len > 10000:
+                break
+            truncated_files[path] = content[:2000]
+            total_len += len(truncated_files[path])
+
+        prompt = f"""
+Analyze the provided repository details and file contents to extract the key technical stack.
+Repository Name: {repo_name}
+Description: {description}
+Files Content:
+{json.dumps(truncated_files, indent=2)}
+
+Return a JSON array of objects representing the technical highlights. Each object must have the following keys:
+- "name": The name of the technology (e.g., "Java 21", "Spring Boot", "PostgreSQL").
+- "color": A hex color code without the '#' (e.g., "ED8B00" for Java).
+- "logo": The corresponding simple-icons logo slug (e.g., "openjdk", "spring-boot", "postgresql").
+- "description": A concise technical description of how it's used based on the provided context (e.g., "Primary DB with Flyway migrations").
+
+Ensure the response strictly contains only valid JSON.
+"""
+        try:
+            response = self.client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                ),
+            )
+
+            result_json = json.loads(response.text)
+
+            tech_stack = []
+            for item in result_json:
+                tech_stack.append((
+                    item.get("name", "Unknown"),
+                    item.get("color", "000000"),
+                    item.get("logo", "github"),
+                    item.get("description", "")
+                ))
+            return tech_stack
+
+        except Exception as e:
+            print(f"Error during Gemini analysis for {repo_name}: {e}")
+            return []
+
 class TechAnalyzer:
-    def __init__(self, github_client: GitHubClient):
+    def __init__(self, github_client: GitHubClient, gemini_client: Optional[GeminiClient] = None):
         self.github_client = github_client
+        self.gemini_client = gemini_client
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
         print(f"Analyzing {repo_name}...")
-        topics = repo.get("topics", [])
         description = repo.get("description", "") or ""
 
-        tech_stack: List[Tuple[str, str, str, str]] = []
-        added_techs = set()
+        if not self.gemini_client:
+            print("Gemini API key not provided, skipping deep analysis.")
+            return []
 
-        def add_tech(key: str) -> None:
-            if key in TOPIC_TECH_MAP and key not in added_techs:
-                tech_stack.append(TOPIC_TECH_MAP[key])
-                added_techs.add(key)
-
-        # 1. Topics
-        for topic in topics:
-            add_tech(topic)
-
-        # 2. Languages API
-        languages = self.github_client.get_repo_languages(repo_name)
-        for lang in languages:
-            add_tech(lang.lower())
-
-        # 3. Dependency files
-        pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
-        if pom_xml:
-            add_tech("java")
-            for keyword, tech in POM_TECH_MAPPINGS.items():
-                if keyword in pom_xml:
-                    add_tech(tech)
-
-        package_json = self.github_client.get_file_content(repo_name, "package.json")
-        if package_json:
-            for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
-                if keyword in package_json:
-                    add_tech(tech)
-
-        build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
-        if build_gradle:
-            add_tech("java")
-            for keyword, tech in GRADLE_TECH_MAPPINGS.items():
-                if keyword in build_gradle:
-                    add_tech(tech)
-
-        dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
-        if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
-            add_tech("docker")
-
-        if self.github_client.check_path_exists(repo_name, "k8s") or self.github_client.check_path_exists(repo_name, "kubernetes"):
-            add_tech("kubernetes")
-
-        # 4. Configuration files
-        config_files = [
-            "application.yml", "application.yaml", "application.properties",
-            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
+        # Gather key files
+        files_to_check = [
+            "README.md", "pom.xml", "package.json", "build.gradle",
+            "Dockerfile", "docker-compose.yml",
+            "application.yml", "application.properties",
+            "src/main/resources/application.yml", "src/main/resources/application.properties"
         ]
-        for config_file in config_files:
-            content = self.github_client.get_file_content(repo_name, config_file)
+
+        files_content = {}
+        for filepath in files_to_check:
+            content = self.github_client.get_file_content(repo_name, filepath)
             if content:
-                for keyword, tech in CONFIG_TECH_MAPPINGS.items():
-                    if keyword in content.lower():
-                        add_tech(tech)
+                # Keep only the first few KB of each file to avoid huge payloads
+                files_content[filepath] = content[:2000]
 
-        # 5. Fallback scanning
-        for key in TOPIC_TECH_MAP.keys():
-            if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
-                add_tech(key)
-            elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
-                add_tech(key)
-
-        # 6. Language fallback
-        if not tech_stack and repo.get("language"):
-            add_tech(repo["language"].lower())
-
-        return tech_stack
+        # Call Gemini Client
+        return self.gemini_client.analyze_tech_stack(repo_name, description, files_content)
 
 class MarkdownGenerator:
     def generate(self, repos: List[Dict[str, Any]], analyzer: TechAnalyzer) -> str:
@@ -290,9 +243,15 @@ class ReadmeUpdater:
 if __name__ == "__main__":
     username = "ThaiVietPhat"
     token = os.environ.get("GITHUB_TOKEN")
+    gemini_api_key = os.environ.get("GEMINI_API_KEY")
 
     client = GitHubClient(username, token)
-    analyzer = TechAnalyzer(client)
+
+    gemini_client = None
+    if gemini_api_key:
+        gemini_client = GeminiClient(gemini_api_key)
+
+    analyzer = TechAnalyzer(client, gemini_client)
     generator = MarkdownGenerator()
     updater = ReadmeUpdater()
 
