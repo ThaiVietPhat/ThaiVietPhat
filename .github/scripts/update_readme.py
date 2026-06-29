@@ -1,82 +1,28 @@
 import os
 import requests
 import json
-import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
-
-# Mapping of topics to technical descriptions and badges
-TOPIC_TECH_MAP = {
-    "java": ("Java", "ED8B00", "openjdk", "Backend development using Java."),
-    "spring-boot": ("Spring Boot", "6DB33F", "spring-boot", "Robust backend application using Spring Boot."),
-    "spring-security": ("Spring Security", "6DB33F", "spring-security", "Secure authentication and authorization."),
-    "microservices": ("Microservices", "E34F26", "spring", "Scalable distributed microservices architecture."),
-    "kafka": ("Apache Kafka", "231F20", "apache-kafka", "Event-driven architecture and real-time messaging."),
-    "redis": ("Redis", "DC382D", "redis", "High-performance caching and distributed sessions."),
-    "docker": ("Docker", "2496ED", "docker", "Containerized deployment and environment consistency."),
-    "kubernetes": ("Kubernetes", "326CE5", "kubernetes", "Automated container deployment and scaling."),
-    "websocket": ("WebSocket", "010101", "socket.io", "Real-time bidirectional communication."),
-    "jwt": ("JWT", "000000", "json-web-tokens", "Stateless authentication via JSON Web Tokens."),
-    "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
-    "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
-    "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
-}
-
-POM_TECH_MAPPINGS = {
-    "spring-boot": "spring-boot",
-    "spring-cloud": "microservices",
-    "spring-kafka": "kafka",
-    "kafka-clients": "kafka",
-    "spring-data-redis": "redis",
-    "jedis": "redis",
-    "jjwt": "jwt",
-    "java-jwt": "jwt",
-    "mysql-connector": "mysql",
-    "postgresql": "postgresql",
-    "spring-data-mongodb": "mongodb",
-    "spring-security": "spring-security",
-    "spring-boot-starter-websocket": "websocket",
-}
-
-PACKAGE_JSON_TECH_MAPPINGS = {
-    "jsonwebtoken": "jwt",
-    "socket.io": "websocket",
-    "ws": "websocket",
-    "redis": "redis",
-    "ioredis": "redis",
-    "kafkajs": "kafka",
-    "mysql": "mysql",
-    "mysql2": "mysql",
-    "pg": "postgresql",
-    "mongodb": "mongodb",
-    "mongoose": "mongodb",
-}
-
-GRADLE_TECH_MAPPINGS = {
-    "spring-boot": "spring-boot",
-    "spring-security": "spring-security",
-}
-
-CONFIG_TECH_MAPPINGS = {
-    "mysql": "mysql",
-    "postgresql": "postgresql",
-    "mongodb": "mongodb",
-    "redis": "redis",
-    "kafka": "kafka",
-}
+from google import genai
+from google.genai import types
 
 class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
+                print(f"Not found: {url}")
+                return None
+            if response.status_code == 403:
+                print(f"Rate limited or forbidden: {url}")
                 return None
             response.raise_for_status()
             return response
@@ -127,82 +73,129 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+             print("Warning: GEMINI_API_KEY not found. Analysis might be limited or fail.")
+        self.gemini_client = genai.Client(api_key=api_key) if api_key else None
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
         print(f"Analyzing {repo_name}...")
+
+        # 1. Gather context
         topics = repo.get("topics", [])
         description = repo.get("description", "") or ""
+        languages = list(self.github_client.get_repo_languages(repo_name).keys())
 
-        tech_stack: List[Tuple[str, str, str, str]] = []
+        context_files = []
+        files_to_check = [
+            "README.md", "pom.xml", "package.json", "build.gradle",
+            "Dockerfile", "docker-compose.yml",
+            "application.yml", "application.yaml", "application.properties",
+            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
+        ]
+
+        for filepath in files_to_check:
+            content = self.github_client.get_file_content(repo_name, filepath)
+            if content:
+                # Truncate content to avoid exceeding context limits
+                truncated_content = content[:2000]
+                context_files.append(f"--- {filepath} ---\n{truncated_content}\n")
+
+        context_str = "".join(context_files)
+
+        if not self.gemini_client:
+            print("Gemini API key missing, returning empty tech stack.")
+            return []
+
+        # 2. Call Gemini
+        prompt = f"""
+        Analyze the following repository to identify its key technologies and specific technical highlights.
+
+        Repository Name: {repo_name}
+        Description: {description}
+        Topics: {', '.join(topics)}
+        Languages: {', '.join(languages)}
+
+        File Contents (truncated):
+        {context_str}
+
+        Based on this context, identify the 3 to 7 most important technologies used in this project.
+        For each technology, provide:
+        1. "name": The name of the technology (e.g., "Spring Boot", "React", "PostgreSQL").
+        2. "color": A suitable shield.io hex color code WITHOUT the hash (e.g., "6DB33F").
+        3. "logo": The exact name of the simpleicons logo for shields.io (e.g., "spring-boot").
+        4. "highlight": A specific, highly technical sentence describing how this technology is used in the project based on the provided context (e.g., "Spring Boot 3.4.2 (Java 21) — REST API + WebSocket STOMP server"). DO NOT give generic descriptions like "Used for backend development."
+
+        Return the result EXACTLY as a JSON array of objects, with no markdown formatting or backticks.
+        Example format:
+        [
+            {{"name": "Java", "color": "ED8B00", "logo": "openjdk", "highlight": "Java 21 with sealed interfaces, records, pattern matching"}},
+            {{"name": "Redis", "color": "DC382D", "logo": "redis", "highlight": "Redis-backed cart, refresh token blacklist, rate limiting"}}
+        ]
+        """
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                )
+            )
+
+            # Parse JSON
+            tech_stack_json = json.loads(response.text)
+
+            tech_stack = []
+            for item in tech_stack_json:
+                tech_stack.append((
+                    item.get("name", "Unknown"),
+                    item.get("color", "000000"),
+                    item.get("logo", "github"),
+                    item.get("highlight", "Used in the project")
+                ))
+            return tech_stack
+
+        except Exception as e:
+            print(f"Error calling Gemini API: {e}")
+
+        # Fallback to static analysis if Gemini fails or API key is missing
+        print("Falling back to static analysis...")
+        tech_stack_static = []
         added_techs = set()
 
         def add_tech(key: str) -> None:
             if key in TOPIC_TECH_MAP and key not in added_techs:
-                tech_stack.append(TOPIC_TECH_MAP[key])
+                tech_stack_static.append(TOPIC_TECH_MAP[key])
                 added_techs.add(key)
 
-        # 1. Topics
         for topic in topics:
             add_tech(topic)
 
-        # 2. Languages API
-        languages = self.github_client.get_repo_languages(repo_name)
         for lang in languages:
             add_tech(lang.lower())
 
-        # 3. Dependency files
-        pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
-        if pom_xml:
-            add_tech("java")
-            for keyword, tech in POM_TECH_MAPPINGS.items():
-                if keyword in pom_xml:
-                    add_tech(tech)
+        return tech_stack_static
 
-        package_json = self.github_client.get_file_content(repo_name, "package.json")
-        if package_json:
-            for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
-                if keyword in package_json:
-                    add_tech(tech)
 
-        build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
-        if build_gradle:
-            add_tech("java")
-            for keyword, tech in GRADLE_TECH_MAPPINGS.items():
-                if keyword in build_gradle:
-                    add_tech(tech)
+# Static mapping fallback
+TOPIC_TECH_MAP = {
+    "java": ("Java", "ED8B00", "openjdk", "Backend development using Java."),
+    "spring-boot": ("Spring Boot", "6DB33F", "spring-boot", "Robust backend application using Spring Boot."),
+    "spring-security": ("Spring Security", "6DB33F", "spring-security", "Secure authentication and authorization."),
+    "microservices": ("Microservices", "E34F26", "spring", "Scalable distributed microservices architecture."),
+    "kafka": ("Apache Kafka", "231F20", "apache-kafka", "Event-driven architecture and real-time messaging."),
+    "redis": ("Redis", "DC382D", "redis", "High-performance caching and distributed sessions."),
+    "docker": ("Docker", "2496ED", "docker", "Containerized deployment and environment consistency."),
+    "kubernetes": ("Kubernetes", "326CE5", "kubernetes", "Automated container deployment and scaling."),
+    "websocket": ("WebSocket", "010101", "socket.io", "Real-time bidirectional communication."),
+    "jwt": ("JWT", "000000", "json-web-tokens", "Stateless authentication via JSON Web Tokens."),
+    "mysql": ("MySQL", "4479A1", "mysql", "Relational database management."),
+    "postgresql": ("PostgreSQL", "316192", "postgresql", "Advanced relational database management."),
+    "mongodb": ("MongoDB", "4EA94B", "mongodb", "NoSQL document database."),
+}
 
-        dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
-        if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
-            add_tech("docker")
-
-        if self.github_client.check_path_exists(repo_name, "k8s") or self.github_client.check_path_exists(repo_name, "kubernetes"):
-            add_tech("kubernetes")
-
-        # 4. Configuration files
-        config_files = [
-            "application.yml", "application.yaml", "application.properties",
-            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
-        ]
-        for config_file in config_files:
-            content = self.github_client.get_file_content(repo_name, config_file)
-            if content:
-                for keyword, tech in CONFIG_TECH_MAPPINGS.items():
-                    if keyword in content.lower():
-                        add_tech(tech)
-
-        # 5. Fallback scanning
-        for key in TOPIC_TECH_MAP.keys():
-            if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
-                add_tech(key)
-            elif key not in added_techs and key in ['kafka', 'redis', 'docker', 'kubernetes', 'websocket', 'jwt', 'mysql', 'postgresql', 'mongodb'] and re.search(r'\b' + re.escape(key) + r'\b', description, re.IGNORECASE):
-                add_tech(key)
-
-        # 6. Language fallback
-        if not tech_stack and repo.get("language"):
-            add_tech(repo["language"].lower())
-
-        return tech_stack
 
 class MarkdownGenerator:
     def generate(self, repos: List[Dict[str, Any]], analyzer: TechAnalyzer) -> str:
