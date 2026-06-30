@@ -5,6 +5,12 @@ import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
 
+try:
+    from google import genai
+    from google.genai import types
+except ImportError:
+    genai = None
+
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
     "java": ("Java", "ED8B00", "openjdk", "Backend development using Java."),
@@ -69,14 +75,17 @@ class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
-            if response.status_code == 404:
+            response = self.session.get(url)
+            if response.status_code in (403, 404):
+                if response.status_code == 403:
+                    print(f"Rate limit or forbidden accessing {url}: {response.text}")
                 return None
             response.raise_for_status()
             return response
@@ -127,6 +136,64 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        self.gemini_client = None
+        self.gemini_model = "gemini-2.0-flash"
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if genai and api_key:
+            try:
+                self.gemini_client = genai.Client(api_key=api_key)
+            except Exception as e:
+                print(f"Failed to initialize Gemini client: {e}")
+
+    def analyze_repo_gemini(self, repo_name: str, description: str, files_content: str) -> List[Tuple[str, str, str, str]]:
+        if not self.gemini_client:
+            return []
+
+        print(f"Using Gemini to analyze {repo_name}...")
+        prompt = f"""
+        Analyze the following repository information and code snippets to extract the primary technical stack.
+        Repository Name: {repo_name}
+        Description: {description}
+        Code Snippets:
+        {files_content}
+
+        Based on the code, identify the key technologies used. Return a JSON array of objects, where each object represents a technology and has the following keys:
+        - "key": A short, hyphenated identifier for the technology (e.g., "spring-boot", "react", "postgresql"). Must closely match typical shield.io badges.
+        - "name": The display name of the technology (e.g., "Spring Boot").
+        - "color": The hex color code without the '#' (e.g., "6DB33F").
+        - "logo": The logo name from simple-icons (e.g., "spring-boot").
+        - "description": A short, one-sentence description of how this technology is used in the context of the repository.
+
+        Only include significant technologies. Return ONLY valid JSON.
+        """
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model=self.gemini_model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                )
+            )
+
+            text = response.text
+            # Clean up the response if it has markdown formatting
+            if text.startswith("```json"):
+                text = text[7:]
+            if text.endswith("```"):
+                text = text[:-3]
+
+            data = json.loads(text.strip())
+
+            results = []
+            for item in data:
+                # Ensure all keys exist
+                if all(k in item for k in ["key", "name", "color", "logo", "description"]):
+                    results.append((item["name"], item["color"], item["logo"], item["description"]))
+            return results
+        except Exception as e:
+            print(f"Gemini API analysis failed for {repo_name}: {e}")
+            return []
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
@@ -136,6 +203,17 @@ class TechAnalyzer:
 
         tech_stack: List[Tuple[str, str, str, str]] = []
         added_techs = set()
+
+        # Collect code content for Gemini
+        files_for_gemini = ""
+
+        # Helper to safely add to files_for_gemini
+        def add_file_content(filename: str, content: Optional[str]) -> None:
+            nonlocal files_for_gemini
+            if content:
+                # Truncate content to avoid exceeding context limits
+                truncated_content = content[:2000]
+                files_for_gemini += f"\n--- {filename} ---\n{truncated_content}\n"
 
         def add_tech(key: str) -> None:
             if key in TOPIC_TECH_MAP and key not in added_techs:
@@ -153,6 +231,7 @@ class TechAnalyzer:
 
         # 3. Dependency files
         pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
+        add_file_content("pom.xml", pom_xml)
         if pom_xml:
             add_tech("java")
             for keyword, tech in POM_TECH_MAPPINGS.items():
@@ -160,12 +239,14 @@ class TechAnalyzer:
                     add_tech(tech)
 
         package_json = self.github_client.get_file_content(repo_name, "package.json")
+        add_file_content("package.json", package_json)
         if package_json:
             for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
                 if keyword in package_json:
                     add_tech(tech)
 
         build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
+        add_file_content("build.gradle", build_gradle)
         if build_gradle:
             add_tech("java")
             for keyword, tech in GRADLE_TECH_MAPPINGS.items():
@@ -173,6 +254,7 @@ class TechAnalyzer:
                     add_tech(tech)
 
         dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
+        add_file_content("Dockerfile", dockerfile)
         if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
             add_tech("docker")
 
@@ -187,11 +269,21 @@ class TechAnalyzer:
         for config_file in config_files:
             content = self.github_client.get_file_content(repo_name, config_file)
             if content:
+                add_file_content(config_file, content)
                 for keyword, tech in CONFIG_TECH_MAPPINGS.items():
                     if keyword in content.lower():
                         add_tech(tech)
 
-        # 5. Fallback scanning
+        # Try Gemini API if client is available
+        gemini_techs = []
+        if self.gemini_client and files_for_gemini:
+            gemini_techs = self.analyze_repo_gemini(repo_name, description, files_for_gemini)
+
+        if gemini_techs:
+            # If Gemini successfully extracted tech stack, use it
+            return gemini_techs
+
+        # 5. Fallback scanning (used if Gemini fails or is not configured)
         for key in TOPIC_TECH_MAP.keys():
             if key not in added_techs and re.search(r'\b' + re.escape(key.replace('-', ' ')) + r'\b', description, re.IGNORECASE):
                 add_tech(key)
