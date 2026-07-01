@@ -152,6 +152,7 @@ public record Profile(
 
 <h2 align="center">🚀 Featured Projects</h2>
 
+<!-- START_FEATURED_PROJECTS -->
 <h3>💡 Shopee Clone — Modular Monolith <sub><sup><i>Graduation Thesis · IUH 2026</i></sup></sub></h3>
 
 > **Status:** Active — Backend complete · Frontend in progress
@@ -213,6 +214,7 @@ public record Profile(
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql" />
   <img src="https://img.shields.io/badge/Elasticsearch-005571?style=for-the-badge&logo=elasticsearch" />
 </p>
+<!-- END_FEATURED_PROJECTS -->
 
 ---
 

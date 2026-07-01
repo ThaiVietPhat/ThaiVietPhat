@@ -3,6 +3,7 @@ import requests
 import json
 import re
 import base64
+from google import genai
 from typing import Optional, List, Dict, Any, Tuple
 
 # Mapping of topics to technical descriptions and badges
@@ -127,6 +128,74 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        self.gemini_client = None
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        if gemini_api_key:
+            try:
+                self.gemini_client = genai.Client(api_key=gemini_api_key)
+            except Exception as e:
+                print(f"Failed to initialize Gemini client: {e}")
+
+    def _analyze_with_gemini(self, repo_name: str, description: str, topics: List[str]) -> Optional[List[Tuple[str, str, str, str]]]:
+        if not self.gemini_client:
+            return None
+
+        print(f"Attempting Gemini analysis for {repo_name}...")
+
+        # Gather some files to send as context
+        files_context = ""
+        for file_path in ["pom.xml", "package.json", "build.gradle", "application.yml", "docker-compose.yml"]:
+            content = self.github_client.get_file_content(repo_name, file_path)
+            if content:
+                # Truncate to avoid exceeding limits
+                files_context += f"\\n--- {file_path} ---\\n{content[:1500]}\\n"
+
+        prompt = f"""
+        Analyze the following GitHub repository to determine its core tech stack.
+        Repository Name: {repo_name}
+        Description: {description}
+        Topics: {', '.join(topics)}
+
+        Files Context (truncated):
+        {files_context}
+
+        Based on this information, return a JSON array of technical highlights.
+        Each item in the array must be an object with exactly these four keys:
+        - "key": A short standard identifier (e.g., "java", "spring-boot", "react").
+        - "color": A hex color code for a badge without the # (e.g., "ED8B00").
+        - "logo": A SimpleIcons logo identifier (e.g., "openjdk", "react").
+        - "description": A short, 1-sentence technical description of how it might be used here.
+
+        Return ONLY valid JSON array. Do not wrap in markdown blocks like ```json.
+        """
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+            )
+
+            text = response.text.strip()
+            if text.startswith("```json"):
+                text = text[7:]
+            if text.startswith("```"):
+                text = text[3:]
+            if text.endswith("```"):
+                text = text[:-3]
+
+            data = json.loads(text.strip())
+
+            result = []
+            for item in data:
+                if isinstance(item, dict) and all(k in item for k in ["key", "color", "logo", "description"]):
+                    result.append((item["key"].title(), item["color"], item["logo"], item["description"]))
+
+            if result:
+                return result
+        except Exception as e:
+            print(f"Gemini API analysis failed: {e}")
+
+        return None
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
@@ -134,6 +203,13 @@ class TechAnalyzer:
         topics = repo.get("topics", [])
         description = repo.get("description", "") or ""
 
+        # Try Gemini API first
+        gemini_results = self._analyze_with_gemini(repo_name, description, topics)
+        if gemini_results:
+            print(f"Successfully analyzed {repo_name} with Gemini.")
+            return gemini_results
+
+        print(f"Falling back to static analysis for {repo_name}...")
         tech_stack: List[Tuple[str, str, str, str]] = []
         added_techs = set()
 
