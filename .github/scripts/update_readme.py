@@ -4,6 +4,8 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+from google import genai
+from google.genai import types
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -69,13 +71,14 @@ class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -124,9 +127,52 @@ class GitHubClient:
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
 
+class GeminiAnalyzer:
+    def __init__(self):
+        self.api_key = os.environ.get("GEMINI_API_KEY")
+        self.client = genai.Client(api_key=self.api_key) if self.api_key else None
+        self.available_tech = list(TOPIC_TECH_MAP.keys())
+
+    def analyze_source_code(self, filename: str, content: str) -> List[str]:
+        if not self.client or not content:
+            return []
+
+        # Truncate content to avoid exceeding token limits
+        max_chars = 2000
+        truncated_content = content[:max_chars]
+
+        prompt = f"""
+        Analyze the following source code file ({filename}) and identify the main technologies used.
+        Only select from this list of available technologies: {', '.join(self.available_tech)}
+
+        Source code:
+        {truncated_content}
+
+        Return the identified technologies as a JSON array of strings. Do not return anything else.
+        """
+
+        try:
+            response = self.client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                ),
+            )
+
+            if response.text:
+                result = json.loads(response.text)
+                return [tech.lower() for tech in result if tech.lower() in self.available_tech]
+            return []
+        except Exception as e:
+            print(f"Gemini API analysis failed for {filename}: {e}")
+            return []
+
+
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        self.gemini_analyzer = GeminiAnalyzer()
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
@@ -151,26 +197,27 @@ class TechAnalyzer:
         for lang in languages:
             add_tech(lang.lower())
 
+        # Helper to analyze file content dynamically then statically
+        def process_file_content(filename: str, content: Optional[str], static_mapping: Dict[str, str], is_java: bool = False):
+            if content:
+                if is_java:
+                    add_tech("java")
+
+                # Dynamic Analysis (Gemini)
+                gemini_techs = self.gemini_analyzer.analyze_source_code(filename, content)
+                if gemini_techs:
+                    for tech in gemini_techs:
+                        add_tech(tech)
+                else:
+                    # Fallback Static Analysis
+                    for keyword, tech in static_mapping.items():
+                        if keyword in content.lower():
+                            add_tech(tech)
+
         # 3. Dependency files
-        pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
-        if pom_xml:
-            add_tech("java")
-            for keyword, tech in POM_TECH_MAPPINGS.items():
-                if keyword in pom_xml:
-                    add_tech(tech)
-
-        package_json = self.github_client.get_file_content(repo_name, "package.json")
-        if package_json:
-            for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
-                if keyword in package_json:
-                    add_tech(tech)
-
-        build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
-        if build_gradle:
-            add_tech("java")
-            for keyword, tech in GRADLE_TECH_MAPPINGS.items():
-                if keyword in build_gradle:
-                    add_tech(tech)
+        process_file_content("pom.xml", self.github_client.get_file_content(repo_name, "pom.xml"), POM_TECH_MAPPINGS, True)
+        process_file_content("package.json", self.github_client.get_file_content(repo_name, "package.json"), PACKAGE_JSON_TECH_MAPPINGS)
+        process_file_content("build.gradle", self.github_client.get_file_content(repo_name, "build.gradle"), GRADLE_TECH_MAPPINGS, True)
 
         dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
         if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
@@ -185,11 +232,7 @@ class TechAnalyzer:
             "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
         ]
         for config_file in config_files:
-            content = self.github_client.get_file_content(repo_name, config_file)
-            if content:
-                for keyword, tech in CONFIG_TECH_MAPPINGS.items():
-                    if keyword in content.lower():
-                        add_tech(tech)
+            process_file_content(config_file, self.github_client.get_file_content(repo_name, config_file), CONFIG_TECH_MAPPINGS)
 
         # 5. Fallback scanning
         for key in TOPIC_TECH_MAP.keys():
