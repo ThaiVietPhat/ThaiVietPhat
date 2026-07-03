@@ -4,6 +4,8 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+from google import genai
+from google.genai import types
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -127,10 +129,105 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        api_key = os.environ.get("GEMINI_API_KEY")
+        self.gemini_client = genai.Client(api_key=api_key) if api_key else None
+
+    def _truncate_content(self, content: Optional[str], max_chars: int = 1000) -> str:
+        if not content:
+            return ""
+        return content[:max_chars]
+
+    def _analyze_with_gemini(self, repo: Dict[str, Any], files_content: Dict[str, str]) -> Optional[List[Tuple[str, str, str, str]]]:
+        if not self.gemini_client:
+            return None
+
+        repo_name = repo.get("name", "")
+        description = repo.get("description", "")
+        languages = self.github_client.get_repo_languages(repo_name)
+
+        prompt = f"""
+Analyze the following repository and its key files to determine its primary technology stack and technical highlights.
+Repository Name: {repo_name}
+Description: {description}
+Languages: {json.dumps(languages)}
+
+Key File Contents (Truncated):
+"""
+        for filename, content in files_content.items():
+            if content:
+                prompt += f"\n--- {filename} ---\n{content}\n"
+
+        prompt += """
+Based on this information, provide a list of the top technologies used.
+For each technology, provide:
+1. tech_name: The name of the technology (e.g., "Spring Boot").
+2. color: A 6-character hex color code representing the technology (e.g., "6DB33F").
+3. logo: The simpleicons logo name for the technology (e.g., "spring-boot").
+4. tech_desc: A short, concise technical description of how it might be used (e.g., "Robust backend application").
+
+Return ONLY a JSON array of objects. Example format:
+[
+  {
+    "tech_name": "Spring Boot",
+    "color": "6DB33F",
+    "logo": "spring-boot",
+    "tech_desc": "Robust backend application."
+  }
+]
+"""
+        try:
+            response = self.gemini_client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                ),
+            )
+
+            if response.text:
+                data = json.loads(response.text)
+                if isinstance(data, list):
+                    tech_stack = []
+                    for item in data:
+                        tech_stack.append((
+                            item.get("tech_name", ""),
+                            item.get("color", "000000"),
+                            item.get("logo", ""),
+                            item.get("tech_desc", "")
+                        ))
+                    return tech_stack
+            return None
+        except Exception as e:
+            print(f"Gemini API analysis failed: {e}")
+            return None
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
         print(f"Analyzing {repo_name}...")
+
+        # Gather file contents for Gemini
+        files_content = {}
+        files_to_check = [
+            "pom.xml", "package.json", "build.gradle", "Dockerfile", "docker-compose.yml",
+            "application.yml", "application.yaml", "application.properties",
+            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
+        ]
+
+        for filepath in files_to_check:
+            content = self.github_client.get_file_content(repo_name, filepath)
+            if content:
+                files_content[filepath] = self._truncate_content(content)
+
+        # Try Gemini API first
+        if self.gemini_client:
+            print("Attempting analysis with Gemini...")
+            gemini_result = self._analyze_with_gemini(repo, files_content)
+            if gemini_result:
+                print("Gemini analysis successful.")
+                return gemini_result
+            else:
+                print("Gemini analysis failed or returned empty. Falling back to static analysis.")
+
         topics = repo.get("topics", [])
         description = repo.get("description", "") or ""
 
@@ -151,29 +248,29 @@ class TechAnalyzer:
         for lang in languages:
             add_tech(lang.lower())
 
-        # 3. Dependency files
-        pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
+        # 3. Dependency files (using pre-fetched contents where possible)
+        pom_xml = files_content.get("pom.xml")
         if pom_xml:
             add_tech("java")
             for keyword, tech in POM_TECH_MAPPINGS.items():
                 if keyword in pom_xml:
                     add_tech(tech)
 
-        package_json = self.github_client.get_file_content(repo_name, "package.json")
+        package_json = files_content.get("package.json")
         if package_json:
             for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
                 if keyword in package_json:
                     add_tech(tech)
 
-        build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
+        build_gradle = files_content.get("build.gradle")
         if build_gradle:
             add_tech("java")
             for keyword, tech in GRADLE_TECH_MAPPINGS.items():
                 if keyword in build_gradle:
                     add_tech(tech)
 
-        dockerfile = self.github_client.get_file_content(repo_name, "Dockerfile")
-        if dockerfile or self.github_client.get_file_content(repo_name, "docker-compose.yml"):
+        dockerfile = files_content.get("Dockerfile")
+        if dockerfile or files_content.get("docker-compose.yml"):
             add_tech("docker")
 
         if self.github_client.check_path_exists(repo_name, "k8s") or self.github_client.check_path_exists(repo_name, "kubernetes"):
@@ -185,7 +282,7 @@ class TechAnalyzer:
             "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
         ]
         for config_file in config_files:
-            content = self.github_client.get_file_content(repo_name, config_file)
+            content = files_content.get(config_file)
             if content:
                 for keyword, tech in CONFIG_TECH_MAPPINGS.items():
                     if keyword in content.lower():
