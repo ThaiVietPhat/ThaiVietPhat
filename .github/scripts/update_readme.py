@@ -4,6 +4,7 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+from google import genai
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -125,8 +126,23 @@ class GitHubClient:
         return top_repos[:3]
 
 class TechAnalyzer:
-    def __init__(self, github_client: GitHubClient):
+    def __init__(self, github_client: GitHubClient, gemini_client: Optional[genai.Client] = None):
         self.github_client = github_client
+        self.gemini_client = gemini_client
+
+    def _fetch_context_files(self, repo_name: str) -> str:
+        context = []
+        files_to_check = [
+            "pom.xml", "package.json", "build.gradle", "Dockerfile",
+            "docker-compose.yml", "README.md", "application.yml",
+            "src/main/resources/application.yml"
+        ]
+        for f in files_to_check:
+            content = self.github_client.get_file_content(repo_name, f)
+            if content:
+                # Truncate content to avoid exceeding context limits
+                context.append(f"--- {f} ---\n{content[:2000]}")
+        return "\n\n".join(context)
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
@@ -135,6 +151,57 @@ class TechAnalyzer:
         description = repo.get("description", "") or ""
 
         tech_stack: List[Tuple[str, str, str, str]] = []
+
+        if self.gemini_client:
+            try:
+                print(f"  Attempting Gemini analysis for {repo_name}...")
+                context_str = self._fetch_context_files(repo_name)
+
+                prompt = (
+                    f"Analyze the following repository files and metadata to determine the main technologies used.\n"
+                    f"Repository Name: {repo_name}\n"
+                    f"Description: {description}\n"
+                    f"Topics: {', '.join(topics)}\n\n"
+                    f"Files Content:\n{context_str}\n\n"
+                    f"Identify up to 6 key technologies/frameworks used. "
+                    f"For each technology, provide:\n"
+                    f"1. TechName (e.g., 'Spring Boot', 'React', 'PostgreSQL')\n"
+                    f"2. ColorHex (a 6-character hex code representing the brand color, e.g., '6DB33F')\n"
+                    f"3. LogoSlug (the simpleicons.org logo slug, e.g., 'spring-boot', 'react', 'postgresql', 'socket.io')\n"
+                    f"4. Description (A very brief, 1-sentence implementation detail based on the context provided, e.g. 'REST API using Spring Boot' or 'Relational database using PostgreSQL')\n\n"
+                    f"Return ONLY a valid JSON array of arrays, like this:\n"
+                    f"[\n"
+                    f"  [\"Spring Boot\", \"6DB33F\", \"spring-boot\", \"REST API using Spring Boot.\"],\n"
+                    f"  [\"PostgreSQL\", \"316192\", \"postgresql\", \"Primary database.\"]\n"
+                    f"]\n"
+                )
+
+                response = self.gemini_client.models.generate_content(
+                    model='gemini-2.0-flash',
+                    contents=prompt,
+                )
+
+                text_response = response.text
+                # Remove markdown code blocks if present
+                text_response = text_response.strip()
+                if text_response.startswith("```json"):
+                    text_response = text_response.removeprefix("```json").removesuffix("```").strip()
+                elif text_response.startswith("```"):
+                    text_response = text_response.removeprefix("```").removesuffix("```").strip()
+
+                parsed_json = json.loads(text_response)
+
+                if isinstance(parsed_json, list):
+                    for item in parsed_json:
+                        if isinstance(item, list) and len(item) == 4:
+                            tech_stack.append((str(item[0]), str(item[1]), str(item[2]), str(item[3])))
+
+                    if tech_stack:
+                        print(f"  Successfully analyzed {repo_name} with Gemini.")
+                        return tech_stack
+            except Exception as e:
+                print(f"  Gemini analysis failed: {e}. Falling back to static analysis.")
+
         added_techs = set()
 
         def add_tech(key: str) -> None:
@@ -290,9 +357,12 @@ class ReadmeUpdater:
 if __name__ == "__main__":
     username = "ThaiVietPhat"
     token = os.environ.get("GITHUB_TOKEN")
+    gemini_api_key = os.environ.get("GEMINI_API_KEY")
+
+    gemini_client = genai.Client(api_key=gemini_api_key) if gemini_api_key else None
 
     client = GitHubClient(username, token)
-    analyzer = TechAnalyzer(client)
+    analyzer = TechAnalyzer(client, gemini_client)
     generator = MarkdownGenerator()
     updater = ReadmeUpdater()
 
