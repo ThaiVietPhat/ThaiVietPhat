@@ -4,6 +4,12 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+try:
+    from google import genai
+    from google.genai import types
+except ImportError:
+    genai = None
+    types = None
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -127,6 +133,11 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        if genai and gemini_api_key:
+            self.ai_client = genai.Client(api_key=gemini_api_key)
+        else:
+            self.ai_client = None
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
@@ -204,13 +215,103 @@ class TechAnalyzer:
 
         return tech_stack
 
+    def analyze_repo_with_ai(self, repo: Dict[str, Any], static_tech_stack: List[Tuple[str, str, str, str]]) -> Tuple[str, List[Tuple[str, str, str, str]]]:
+        repo_name = repo["name"]
+        description = repo.get("description") or ""
+
+        if not self.ai_client:
+            return description, static_tech_stack
+
+        # Gather truncated content
+        contents = []
+        for filepath in ["README.md", "pom.xml", "package.json", "build.gradle"]:
+            file_content = self.github_client.get_file_content(repo_name, filepath)
+            if file_content:
+                truncated = file_content[:5000]
+                contents.append(f"--- {filepath} ---\n{truncated}")
+
+        if not contents:
+             return description, static_tech_stack
+
+        combined_content = "\n\n".join(contents)
+
+        prompt = f"""
+Analyze the following repository files for "{repo_name}" and provide a short, professional description of the project and a list of key technical highlights.
+Return the output EXACTLY as a JSON object with the following structure:
+{{
+    "description": "A concise, 1-2 sentence professional description of the project.",
+    "tech_stack": [
+        {{
+            "name": "technology name (e.g., 'spring-boot', 'mysql', 'react', 'java')",
+            "details": "A short, technical implementation detail about how this technology is used in this project."
+        }}
+    ]
+}}
+Only include major technologies. The 'name' should preferably match keys like: {', '.join(TOPIC_TECH_MAP.keys())}.
+Here are the files:
+{combined_content}
+"""
+
+        try:
+            response = self.ai_client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                )
+            )
+
+            data = json.loads(response.text)
+            ai_description = data.get("description", description)
+            ai_techs = data.get("tech_stack", [])
+
+            final_tech_stack = []
+            seen = set()
+
+            # Use AI mapped technologies where possible
+            for tech in ai_techs:
+                name_key = tech.get("name", "").lower()
+                details = tech.get("details", "")
+
+                # Find a matching base tech
+                matched_key = None
+                for key in TOPIC_TECH_MAP.keys():
+                    if key in name_key or name_key in key:
+                        matched_key = key
+                        break
+
+                if matched_key and matched_key not in seen:
+                    base_name, color, logo, _ = TOPIC_TECH_MAP[matched_key]
+                    final_tech_stack.append((base_name, color, logo, details))
+                    seen.add(matched_key)
+
+            # Fallback to appending static ones if AI didn't catch them
+            for static_tech in static_tech_stack:
+                base_name, color, logo, default_details = static_tech
+
+                # Check if it's already in seen based on TOPIC_TECH_MAP matching
+                is_seen = False
+                for key, val in TOPIC_TECH_MAP.items():
+                    if val[0] == base_name and key in seen:
+                        is_seen = True
+                        break
+
+                if not is_seen:
+                    final_tech_stack.append(static_tech)
+
+            return ai_description, final_tech_stack
+
+        except Exception as e:
+            print(f"AI analysis failed for {repo_name}: {e}")
+            return description, static_tech_stack
+
 class MarkdownGenerator:
     def generate(self, repos: List[Dict[str, Any]], analyzer: TechAnalyzer) -> str:
         md_content = ""
         for repo in repos:
-            tech_stack = analyzer.analyze_repo(repo)
+            static_tech_stack = analyzer.analyze_repo(repo)
+            description, tech_stack = analyzer.analyze_repo_with_ai(repo, static_tech_stack)
             name = repo["name"].replace("-", " ").title()
-            description = repo.get("description") or "No description provided."
             url = repo["html_url"]
             stars = repo['stargazers_count']
 
