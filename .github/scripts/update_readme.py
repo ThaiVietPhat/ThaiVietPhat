@@ -4,6 +4,13 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+from pydantic import BaseModel, Field
+
+try:
+    from google import genai
+    from google.genai import types
+except ImportError:
+    genai = None
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -69,13 +76,14 @@ class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -124,9 +132,66 @@ class GitHubClient:
         top_repos.sort(key=lambda x: (x['stargazers_count'], x['updated_at']), reverse=True)
         return top_repos[:3]
 
+class TechHighlight(BaseModel):
+    tech_name: str
+    description: str = Field(description="Short implementation details (under 60 chars).")
+
+class AnalysisResult(BaseModel):
+    technologies: list[TechHighlight]
+
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        self.gemini_client = None
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if genai and api_key:
+            self.gemini_client = genai.Client(api_key=api_key)
+
+    def analyze_repo_with_gemini(self, repo_name: str, description: str, files_content: Dict[str, str]) -> List[Tuple[str, str, str, str]]:
+        if not self.gemini_client:
+            return []
+
+        prompt = f"Analyze the following repository '{repo_name}' with description: '{description}'.\n"
+        prompt += "Identify the key technologies used and provide a short implementation detail for each.\n\n"
+        for filepath, content in files_content.items():
+            prompt += f"--- {filepath} ---\n{content}\n\n"
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=AnalysisResult,
+                    temperature=0.1,
+                ),
+            )
+
+            result = AnalysisResult.model_validate_json(response.text)
+
+            tech_stack = []
+            added_techs = set()
+            for tech in result.technologies:
+                # Try to map to our known technologies for badges
+                mapped_key = tech.tech_name.lower().replace(" ", "-")
+
+                # Check directly or check if mapped key contains a known tech
+                found_match = None
+                for known_key in TOPIC_TECH_MAP.keys():
+                    if known_key in mapped_key or known_key.replace("-", "") in mapped_key:
+                        found_match = known_key
+                        break
+
+                if found_match and found_match not in added_techs:
+                    _, color, logo, _ = TOPIC_TECH_MAP[found_match]
+                    tech_stack.append((TOPIC_TECH_MAP[found_match][0], color, logo, tech.description))
+                    added_techs.add(found_match)
+
+            return tech_stack
+
+        except Exception as e:
+            print(f"Gemini API analysis failed: {e}")
+            return []
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
@@ -142,30 +207,63 @@ class TechAnalyzer:
                 tech_stack.append(TOPIC_TECH_MAP[key])
                 added_techs.add(key)
 
-        # 1. Topics
+        # Collect file contents for Gemini
+        files_content = {}
+
+        def fetch_and_truncate(filepath: str, max_chars=5000) -> Optional[str]:
+            content = self.github_client.get_file_content(repo_name, filepath)
+            if content:
+                files_content[filepath] = content[:max_chars]
+            return content
+
+        # 1. Fetch Dependency & Config files
+        pom_xml = fetch_and_truncate("pom.xml")
+        package_json = fetch_and_truncate("package.json")
+        build_gradle = fetch_and_truncate("build.gradle")
+
+        config_files = [
+            "application.yml", "application.yaml", "application.properties",
+            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
+        ]
+        config_contents = {}
+        for config_file in config_files:
+            content = fetch_and_truncate(config_file)
+            if content:
+                config_contents[config_file] = content
+
+        readme_md = fetch_and_truncate("README.md")
+
+        # 2. Try Gemini first if configured
+        if self.gemini_client and files_content:
+            print(f"Using Gemini to analyze {repo_name}...")
+            gemini_stack = self.analyze_repo_with_gemini(repo_name, description, files_content)
+            if gemini_stack:
+                return gemini_stack
+            print(f"Gemini analysis yielded no results for {repo_name}, falling back to static analysis.")
+
+        # 3. Fallback: Static Analysis
+
+        # Topics
         for topic in topics:
             add_tech(topic)
 
-        # 2. Languages API
+        # Languages API
         languages = self.github_client.get_repo_languages(repo_name)
         for lang in languages:
             add_tech(lang.lower())
 
-        # 3. Dependency files
-        pom_xml = self.github_client.get_file_content(repo_name, "pom.xml")
+        # Dependency files check
         if pom_xml:
             add_tech("java")
             for keyword, tech in POM_TECH_MAPPINGS.items():
                 if keyword in pom_xml:
                     add_tech(tech)
 
-        package_json = self.github_client.get_file_content(repo_name, "package.json")
         if package_json:
             for keyword, tech in PACKAGE_JSON_TECH_MAPPINGS.items():
                 if keyword in package_json:
                     add_tech(tech)
 
-        build_gradle = self.github_client.get_file_content(repo_name, "build.gradle")
         if build_gradle:
             add_tech("java")
             for keyword, tech in GRADLE_TECH_MAPPINGS.items():
@@ -180,16 +278,10 @@ class TechAnalyzer:
             add_tech("kubernetes")
 
         # 4. Configuration files
-        config_files = [
-            "application.yml", "application.yaml", "application.properties",
-            "src/main/resources/application.yml", "src/main/resources/application.yaml", "src/main/resources/application.properties"
-        ]
-        for config_file in config_files:
-            content = self.github_client.get_file_content(repo_name, config_file)
-            if content:
-                for keyword, tech in CONFIG_TECH_MAPPINGS.items():
-                    if keyword in content.lower():
-                        add_tech(tech)
+        for config_file, content in config_contents.items():
+            for keyword, tech in CONFIG_TECH_MAPPINGS.items():
+                if keyword in content.lower():
+                    add_tech(tech)
 
         # 5. Fallback scanning
         for key in TOPIC_TECH_MAP.keys():
