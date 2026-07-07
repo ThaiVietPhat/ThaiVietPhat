@@ -4,6 +4,16 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+from pydantic import BaseModel, Field
+from google import genai
+from google.genai import types
+
+class TechHighlight(BaseModel):
+    technology: str = Field(description="The name of the technology, tool, or framework.")
+    implementation_details: str = Field(description="A concise description of how this technology is used in the project based on the code analysis.")
+
+class AnalysisResult(BaseModel):
+    tech_stack: List[TechHighlight] = Field(description="List of technical highlights found in the project.")
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -72,10 +82,12 @@ class GitHubClient:
         self.headers = {"Accept": "application/vnd.github.v3+json"}
         if self.token:
             self.headers["Authorization"] = f"token {self.token}"
+        self.session = requests.Session()
+        self.session.headers.update(self.headers)
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -127,12 +139,99 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        self.gemini_client = None
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        if gemini_api_key:
+             try:
+                 self.gemini_client = genai.Client(api_key=gemini_api_key)
+             except Exception as e:
+                 print(f"Failed to initialize Gemini Client: {e}")
+
+    def _truncate_content(self, content: str, max_chars: int = 5000) -> str:
+        if content and len(content) > max_chars:
+            return content[:max_chars] + "\n...[TRUNCATED]"
+        return content or ""
+
+    def analyze_with_gemini(self, repo_name: str, description: str) -> Optional[List[Tuple[str, str, str, str]]]:
+        if not self.gemini_client:
+            return None
+
+        print(f"Attempting Gemini analysis for {repo_name}...")
+
+        # Gather context
+        files_to_check = ["README.md", "pom.xml", "package.json", "build.gradle", "docker-compose.yml", "Dockerfile"]
+        context = f"Repository Name: {repo_name}\nDescription: {description}\n\n"
+
+        for filepath in files_to_check:
+            content = self.github_client.get_file_content(repo_name, filepath)
+            if content:
+                 context += f"--- {filepath} ---\n{self._truncate_content(content)}\n\n"
+
+        prompt = f"""
+        Analyze the following repository files and context to determine the key technologies, frameworks, and tools used.
+        Extract up to 5 of the most significant technologies.
+        For each technology, provide a concise explanation (1-2 short sentences) of how it is implemented or used in this specific project based on the provided code context.
+        Ensure your response strictly matches the required JSON schema.
+
+        Repository Context:
+        {context}
+        """
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=AnalysisResult,
+                    temperature=0.2,
+                ),
+            )
+
+            if not response.text:
+                 return None
+
+            result_data = json.loads(response.text)
+            parsed_result = AnalysisResult(**result_data)
+
+            tech_stack = []
+            for item in parsed_result.tech_stack:
+                # Try to map the technology to our known list to get color/logo
+                tech_key = next((k for k, v in TOPIC_TECH_MAP.items() if v[0].lower() in item.technology.lower()), None)
+
+                # If not found in TOPIC_TECH_MAP, try to find a close match in the keys
+                if not tech_key:
+                     tech_key_lower = item.technology.lower().replace(" ", "-")
+                     if tech_key_lower in TOPIC_TECH_MAP:
+                         tech_key = tech_key_lower
+
+                if tech_key:
+                    name, color, logo, _ = TOPIC_TECH_MAP[tech_key]
+                    tech_stack.append((name, color, logo, item.implementation_details))
+                else:
+                    # Fallback for unknown technologies, attempt generic formatting
+                    formatted_name = item.technology.replace("-", " ").title()
+                    tech_stack.append((formatted_name, "blue", item.technology.lower().replace(" ", "-"), item.implementation_details))
+
+            return tech_stack
+
+        except Exception as e:
+            print(f"Gemini API analysis failed: {e}")
+            return None
 
     def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
         repo_name = repo["name"]
         print(f"Analyzing {repo_name}...")
         topics = repo.get("topics", [])
         description = repo.get("description", "") or ""
+
+        # Attempt Gemini analysis first
+        gemini_stack = self.analyze_with_gemini(repo_name, description)
+        if gemini_stack:
+            print(f"Gemini analysis successful for {repo_name}.")
+            return gemini_stack
+
+        print(f"Falling back to static analysis for {repo_name}.")
 
         tech_stack: List[Tuple[str, str, str, str]] = []
         added_techs = set()
