@@ -4,6 +4,19 @@ import json
 import re
 import base64
 from typing import Optional, List, Dict, Any, Tuple
+from pydantic import BaseModel, Field
+from google import genai
+from google.genai import types
+
+# Pydantic models for structured Gemini response
+class TechHighlight(BaseModel):
+    name: str = Field(description="The formal name of the technology (e.g., 'Java', 'Spring Boot', 'MySQL').")
+    color: str = Field(description="The HEX color code representing the technology for a shield.io badge, without the '#' symbol.")
+    logo: str = Field(description="The precise simple-icons logo slug for the technology (e.g., 'spring-boot', 'mysql', 'docker').")
+    description: str = Field(description="A concise, one-sentence description explaining how the technology is utilized in the project.")
+
+class AnalysisResult(BaseModel):
+    tech_stack: List[TechHighlight] = Field(description="A list of technical highlights for the repository.")
 
 # Mapping of topics to technical descriptions and badges
 TOPIC_TECH_MAP = {
@@ -69,13 +82,14 @@ class GitHubClient:
     def __init__(self, username: str, token: Optional[str] = None):
         self.username = username
         self.token = token
-        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/vnd.github.v3+json"})
         if self.token:
-            self.headers["Authorization"] = f"token {self.token}"
+            self.session.headers.update({"Authorization": f"token {self.token}"})
 
     def get(self, url: str) -> Optional[requests.Response]:
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.session.get(url)
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -127,13 +141,11 @@ class GitHubClient:
 class TechAnalyzer:
     def __init__(self, github_client: GitHubClient):
         self.github_client = github_client
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        self.gemini_client = genai.Client(api_key=gemini_api_key) if gemini_api_key else None
 
-    def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
-        repo_name = repo["name"]
-        print(f"Analyzing {repo_name}...")
+    def _static_analysis_fallback(self, repo: Dict[str, Any], repo_name: str, description: str) -> List[Tuple[str, str, str, str]]:
         topics = repo.get("topics", [])
-        description = repo.get("description", "") or ""
-
         tech_stack: List[Tuple[str, str, str, str]] = []
         added_techs = set()
 
@@ -203,6 +215,65 @@ class TechAnalyzer:
             add_tech(repo["language"].lower())
 
         return tech_stack
+
+    def analyze_repo(self, repo: Dict[str, Any]) -> List[Tuple[str, str, str, str]]:
+        repo_name = repo["name"]
+        print(f"Analyzing {repo_name}...")
+        description = repo.get("description", "") or ""
+
+        if self.gemini_client:
+            print("Attempting Gemini AI analysis...")
+            try:
+                # Gather context
+                context = f"Repository: {repo_name}\nDescription: {description}\n\n"
+
+                # Truncate content to ~5000 characters
+                def get_truncated(filepath):
+                    content = self.github_client.get_file_content(repo_name, filepath)
+                    return content[:5000] if content else ""
+
+                pom = get_truncated("pom.xml")
+                if pom: context += f"--- pom.xml ---\n{pom}\n\n"
+
+                pkg = get_truncated("package.json")
+                if pkg: context += f"--- package.json ---\n{pkg}\n\n"
+
+                build_grad = get_truncated("build.gradle")
+                if build_grad: context += f"--- build.gradle ---\n{build_grad}\n\n"
+
+                readme = get_truncated("README.md")
+                if readme: context += f"--- README.md ---\n{readme}\n\n"
+
+                prompt = (
+                    "Analyze the provided repository files and description. "
+                    "Identify the core technologies, frameworks, and tools used. "
+                    "For each technology, provide its formal name, the exact simple-icons slug for its logo, "
+                    "a suitable HEX color code (without #), and a concise one-sentence description of how it is likely used in this project based on the context. "
+                    "Focus on backend, databases, devops, and major architectural components. Return the result matching the requested JSON schema."
+                )
+
+                response = self.gemini_client.models.generate_content(
+                    model='gemini-2.0-flash',
+                    contents=[prompt, context],
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json",
+                        response_schema=AnalysisResult,
+                        temperature=0.1
+                    ),
+                )
+
+                result = AnalysisResult.model_validate_json(response.text)
+                tech_stack = []
+                for tech in result.tech_stack:
+                    tech_stack.append((tech.name, tech.color, tech.logo, tech.description))
+                if tech_stack:
+                    return tech_stack
+
+            except Exception as e:
+                print(f"Gemini analysis failed: {e}. Falling back to static analysis.")
+
+        print("Using static analysis fallback...")
+        return self._static_analysis_fallback(repo, repo_name, description)
 
 class MarkdownGenerator:
     def generate(self, repos: List[Dict[str, Any]], analyzer: TechAnalyzer) -> str:
